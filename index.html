@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Holiner Listing Launchpad</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+  /* EMAIL CONFIG (optional, blank = Outlook fallback). emailjs.com for true auto-send. */
+  const EMAILJS_PUBLIC_KEY = "";
+  const EMAILJS_SERVICE_ID = "";
+  const EMAILJS_TEMPLATE_ID = "";
+  const DEFAULT_MARKETING_EMAIL = "marketing@holiner.com";
+</script>
+<style>
+  :root{ --green:#78A167; --green-d:#5f8551; --tan:#AFA183; --cream:#EDECE2; --ink:#22241f; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:
+      radial-gradient(1200px 500px at 80% -10%, rgba(120,161,103,.18), transparent),
+      var(--cream); color:var(--ink); font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; }
+  .wrap{ max-width:780px; margin:0 auto; padding:22px 18px 60px; }
+  input,select,textarea{ width:100%; border:1px solid #ded9c9; background:#fff; border-radius:11px; padding:11px 13px; font-size:14px; outline:none; transition:.15s; }
+  input:focus,select:focus,textarea:focus{ border-color:var(--green); box-shadow:0 0 0 4px rgba(120,161,103,.16); }
+  label{ font-size:11px; font-weight:700; letter-spacing:.04em; color:#6b6a5e; margin-bottom:5px; display:block; text-transform:uppercase; }
+  .req::after{ content:" *"; color:#b4493f; }
+  .card{ background:#fff; border:1px solid #e7e3d6; border-radius:20px; box-shadow:0 6px 24px -12px rgba(40,50,30,.18); }
+  .btn{ font-weight:600; border-radius:12px; padding:11px 20px; cursor:pointer; border:none; font-size:14px; }
+  .btn-p{ background:var(--green); color:#fff; } .btn-p:hover{ background:var(--green-d); }
+  .btn-g{ background:#fff; color:#54534a; border:1px solid #ded9c9; } .btn-g:hover{ background:#f6f4ec; }
+  .hide{ display:none; }
+  .chip{ display:inline-flex; align-items:center; gap:6px; background:#fff; border:1px solid #e2ddcd; border-radius:999px; padding:5px 11px; font-size:12.5px; font-weight:600; color:#4f4e44; }
+  .chip .k{ color:#a9a596; font-weight:700; text-transform:uppercase; font-size:10px; letter-spacing:.04em; }
+  .chip.empty{ opacity:.45; }
+  .stepcard{ flex:0 0 auto; cursor:pointer; border:1px solid #e7e3d6; background:#fff; border-radius:14px; padding:9px 13px; min-width:104px; transition:.15s; }
+  .stepcard:hover{ border-color:var(--green); }
+  .stepcard.active{ background:var(--green); border-color:var(--green); color:#fff; box-shadow:0 8px 20px -10px rgba(120,161,103,.7); }
+  .stepcard.done .num{ background:var(--green); color:#fff; }
+  .stepcard .num{ width:22px; height:22px; border-radius:999px; background:#eee9da; color:#8a8676; font-weight:800; font-size:12px; display:flex; align-items:center; justify-content:center; }
+  .stepcard.active .num{ background:#fff; color:var(--green); }
+  .stepcard .lbl{ font-size:13px; font-weight:700; }
+  .stepcard .sub{ font-size:10.5px; opacity:.7; }
+  .steprow{ display:flex; gap:10px; overflow-x:auto; padding:4px 2px 8px; scrollbar-width:thin; }
+  .field+.field{ margin-top:14px; }
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media(max-width:560px){ .grid2{ grid-template-columns:1fr; } }
+  .suite-row{ display:grid; grid-template-columns:.9fr .7fr .8fr 1fr 1fr 30px; gap:8px; align-items:center; margin-bottom:8px; }
+  .suite-row .x{ cursor:pointer; color:#b4493f; font-weight:800; text-align:center; }
+  .suite-head{ font-size:10px; text-transform:uppercase; color:#a9a596; font-weight:700; letter-spacing:.04em; }
+  @media(max-width:560px){ .suite-row{ grid-template-columns:1fr 1fr; } .suite-head{ display:none; } }
+  .checkrow{ display:flex; align-items:center; gap:11px; padding:9px 11px; border:1px solid #ece8db; border-radius:12px; margin-bottom:8px; cursor:pointer; transition:.15s; }
+  .checkrow:hover{ border-color:var(--green); }
+  .checkrow input{ width:18px; height:18px; accent-color:var(--green); }
+  .brief pre{ white-space:pre-wrap; word-wrap:break-word; font-size:13px; line-height:1.5; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Top bar -->
+  <div class="flex items-center justify-between mb-4">
+    <div class="flex items-center gap-2">
+      <div style="width:30px;height:30px;border-radius:9px;background:var(--green)" class="flex items-center justify-center text-white font-black">H</div>
+      <div>
+        <div class="text-[15px] font-extrabold leading-tight">Listing Launchpad</div>
+        <div class="text-[11px] text-gray-500 -mt-0.5">Lease listing · broker → marketing</div>
+      </div>
+    </div>
+    <button type="button" id="demoBtn" class="btn btn-g text-[12px] !py-2 !px-3">Load 4525 Lemmon</button>
+  </div>
+
+  <!-- LIVE SUMMARY -->
+  <div class="card p-5 mb-5" style="background:linear-gradient(180deg,#fbfaf4,#fff)">
+    <div class="flex items-center justify-between mb-2">
+      <div class="text-[11px] font-bold tracking-wider text-gray-400 uppercase">Listing Summary</div>
+      <div id="pct" class="text-[11px] font-bold" style="color:var(--green)">0% complete</div>
+    </div>
+    <div id="sumTitle" class="text-xl font-extrabold leading-tight text-gray-300">Your property name…</div>
+    <div id="sumAddr" class="text-sm text-gray-400 mb-3">address, city, state</div>
+    <div id="sumChips" class="flex flex-wrap gap-2"></div>
+  </div>
+
+  <!-- STEP NAV CARDS -->
+  <div id="steprow" class="steprow mb-4"></div>
+
+  <!-- FORM -->
+  <form id="form">
+
+    <section class="card p-6 step" data-step="0">
+      <h2 class="text-lg font-extrabold mb-1">Deal Basics</h2>
+      <p class="text-sm text-gray-500 mb-4">The core facts everything keys off.</p>
+      <div class="grid2">
+        <div class="field"><label class="req">Property name</label><input name="propName" placeholder="4525 Lemmon Avenue"></div>
+        <div class="field"><label class="req">Full address</label><input name="address" placeholder="Street, City, State ZIP"></div>
+        <div class="field"><label class="req">Property type</label><select name="propType"><option value="">Select…</option><option>Office</option><option>Office &amp; Medical</option><option>Retail</option><option>Industrial / Flex</option><option>Medical Office</option><option>Mixed-Use</option><option>Land</option><option>Other</option></select></div>
+        <div class="field"><label class="req">Listing broker(s)</label><input name="broker" placeholder="Yosef Drizin; David Holiner"></div>
+        <div class="field"><label>Owner / landlord</label><input name="owner" placeholder="Entity name"></div>
+        <div class="field"><label>Owner contact</label><input name="ownerContact" placeholder="Name / address / phone"></div>
+        <div class="field" style="grid-column:1/-1"><label>Target launch date</label><input name="launchDate" type="date"></div>
+      </div>
+    </section>
+
+    <section class="card p-6 step hide" data-step="1">
+      <h2 class="text-lg font-extrabold mb-1">Building &amp; Suites</h2>
+      <p class="text-sm text-gray-500 mb-4">Specs, then each suite you're marketing.</p>
+      <div class="grid2 mb-5">
+        <div class="field"><label class="req">Total building SF</label><input name="totalSF" placeholder="29,246"></div>
+        <div class="field"><label>SF range available</label><input name="sfRange" placeholder="1,037 – 3,684 RSF"></div>
+        <div class="field"><label>Year built / renovated</label><input name="yearBuilt" placeholder="Remodeled 2023"></div>
+        <div class="field"><label>Parking</label><input name="parking" placeholder="3.1/1,000, covered & gated"></div>
+        <div class="field"><label>Zoning</label><input name="zoning" placeholder="optional"></div>
+        <div class="field"><label>Ceiling / docks</label><input name="ceiling" placeholder="industrial only"></div>
+      </div>
+      <label>Available suites</label>
+      <div class="suite-row suite-head"><div>Suite</div><div>Floor</div><div>SF</div><div>Status</div><div>Rent</div><div></div></div>
+      <div id="suites"></div>
+      <button type="button" id="addSuite" class="btn btn-g text-[13px] !py-2 mt-1">+ Add suite</button>
+    </section>
+
+    <section class="card p-6 step hide" data-step="2">
+      <h2 class="text-lg font-extrabold mb-1">Pricing &amp; Terms</h2>
+      <p class="text-sm text-gray-500 mb-4">What you agreed with the owner.</p>
+      <div class="grid2">
+        <div class="field" style="grid-column:1/-1"><label>Show rate publicly?</label><select name="pricePublic"><option value="">Select…</option><option>Publish the rate</option><option>Withhold (Call for pricing)</option></select></div>
+        <div class="field"><label>Asking rent</label><input name="rent" placeholder="$30.00 / SF / yr"></div>
+        <div class="field"><label>Rent structure</label><select name="rentType"><option value="">Select…</option><option>NNN</option><option>Modified Gross</option><option>Full Service / Gross</option></select></div>
+        <div class="field"><label>NNN / CAM</label><input name="nnn" placeholder="$/SF"></div>
+        <div class="field"><label>Lease term wanted</label><input name="term" placeholder="3–5 yrs"></div>
+        <div class="field"><label>Escalations</label><input name="escalations" placeholder="3% / yr"></div>
+        <div class="field"><label>TI allowance</label><input name="ti" placeholder="move-in ready / $X/SF"></div>
+        <div class="field"><label>Free rent</label><input name="freeRent" placeholder="1 month"></div>
+        <div class="field"><label>Available</label><input name="availDate" placeholder="immediate"></div>
+        <div class="field" style="grid-column:1/-1"><label>Commission / co-broke</label><input name="commission" placeholder="4.5% / 6.75% with co-broke"></div>
+      </div>
+    </section>
+
+    <section class="card p-6 step hide" data-step="3">
+      <h2 class="text-lg font-extrabold mb-1">Flyer Content</h2>
+      <p class="text-sm text-gray-500 mb-4">Mirrors the Holiner flyer. One bullet per line.</p>
+      <div class="field"><label>Cover headline</label><input name="flyerHeadline" placeholder="FOR LEASE - 4525 Lemmon Avenue"></div>
+      <div class="field"><label>The Space</label><textarea name="theSpace" rows="4" placeholder="Quiet Luxury Quality&#10;Mid-Century Modern Aesthetics&#10;Move-in Ready Spec Suites"></textarea></div>
+      <div class="field"><label>Building Features</label><textarea name="buildingFeatures" rows="3" placeholder="Covered and Gated Parking&#10;On-Site Security"></textarea></div>
+      <div class="field"><label>Location &amp; Access</label><textarea name="locationAccess" rows="3" placeholder="Immediate Access to the Tollway"></textarea></div>
+      <div class="field"><label>Map landmarks</label><textarea name="landmarks" rows="2" placeholder="Whole Foods, Highland Park Village, Katy Trail…"></textarea></div>
+      <div class="field"><label>Photo / floor-plan status</label><select name="photoStatus"><option value="">Select…</option><option>All attached / in shared drive</option><option>Marketing to schedule shoot</option><option>Owner providing</option><option>Have exteriors, need interiors</option><option>None yet</option></select></div>
+      <div class="field"><label>Contact block (one broker per line)</label><textarea name="flyerContact" rows="3" placeholder="Yosef Drizin, Associate, yosef@holiner.com, (214) 535-2277"></textarea></div>
+    </section>
+
+    <section class="card p-6 step hide" data-step="4">
+      <h2 class="text-lg font-extrabold mb-1">Marketing Channels</h2>
+      <p class="text-sm text-gray-500 mb-4">Blast, social, and portals.</p>
+      <div class="field"><label>Email blast: audience</label><input name="blastAudience" placeholder="office/medical tenant reps in DFW"></div>
+      <div class="field"><label>Email blast: headline</label><input name="blastHeadline" placeholder="The hook"></div>
+      <div class="field"><label>Social post angle</label><textarea name="social" rows="2" placeholder="What to emphasize for LinkedIn / IG"></textarea></div>
+      <div class="field"><label>Handles to tag / hashtags</label><input name="socialHandles" placeholder="@holinerholdings #DallasCRE"></div>
+      <div class="field"><label>List on these portals</label>
+        <div class="grid2 mt-1" style="gap:8px">
+          <label class="checkrow !normal-case" style="text-transform:none"><input type="checkbox" name="portal" value="LoopNet"><span class="text-sm font-medium">LoopNet</span></label>
+          <label class="checkrow" style="text-transform:none"><input type="checkbox" name="portal" value="Crexi"><span class="text-sm font-medium">Crexi</span></label>
+          <label class="checkrow" style="text-transform:none"><input type="checkbox" name="portal" value="CoStar"><span class="text-sm font-medium">CoStar</span></label>
+          <label class="checkrow" style="text-transform:none"><input type="checkbox" name="portal" value="Catylist"><span class="text-sm font-medium">Catylist</span></label>
+          <label class="checkrow" style="text-transform:none"><input type="checkbox" name="portal" value="Company website"><span class="text-sm font-medium">Company site</span></label>
+        </div>
+      </div>
+      <div class="field"><label>Portal-specific notes</label><textarea name="portalNotes" rows="2" placeholder="optional"></textarea></div>
+    </section>
+
+    <section class="card p-6 step hide" data-step="5b">
+      <h2 class="text-lg font-extrabold mb-1">Approvals &amp; Logistics</h2>
+      <p class="text-sm text-gray-500 mb-4">The stuff that stalls or legally exposes a launch.</p>
+
+      <div class="text-[11px] font-bold tracking-wider text-gray-400 uppercase mb-2">Sign-off &amp; compliance</div>
+      <div class="grid2">
+        <div class="field"><label>Owner approval before publishing</label><input name="ownerApproval" placeholder="Who signs off, e.g. David to Oxford Capital"></div>
+        <div class="field"><label>Confidentiality</label><select name="confidential"><option value="">Select…</option><option>Public listing</option><option>Quiet - do not publicize</option><option>Public, but do not name owner</option></select></div>
+        <div class="field"><label>Broker license #</label><input name="licenseNum" placeholder="TREC license #"></div>
+        <div class="field"><label>Required disclosures on materials</label><select name="disclaimers"><option>Include TREC IABS + license # + standard disclaimer</option><option>Already handled separately</option></select></div>
+      </div>
+
+      <div class="text-[11px] font-bold tracking-wider text-gray-400 uppercase mt-5 mb-2">Logistics</div>
+      <div class="grid2">
+        <div class="field" style="grid-column:1/-1"><label>Where the asset files live</label><input name="assetLink" placeholder="SharePoint / Dropbox link or folder path"></div>
+        <div class="field"><label>Marketing budget cap</label><input name="budgetCap" placeholder="$5,000 per listing agreement"></div>
+        <div class="field"><label>Listing expiration / pull-down date</label><input name="listingExpiration" type="date"></div>
+        <div class="field" style="grid-column:1/-1"><label>Showing instructions / who schedules tours</label><textarea name="showingInstructions" rows="2" placeholder="Contact, access, lockbox, booking link"></textarea></div>
+        <div class="field" style="grid-column:1/-1"><label>Virtual tour / video link</label><input name="tourLink" placeholder="Matterport / video URL (optional)"></div>
+      </div>
+
+      <div class="text-[11px] font-bold tracking-wider text-gray-400 uppercase mt-5 mb-2">Location selling</div>
+      <div class="grid2">
+        <div class="field"><label>Submarket label</label><input name="submarket" placeholder="Oak Lawn / Uptown / Medical District"></div>
+        <div class="field"><label>Traffic counts / demographics</label><input name="trafficDemo" placeholder="VPD, 1/3/5-mi income (if known)"></div>
+        <div class="field" style="grid-column:1/-1"><label>Named co-tenants / nearby anchors</label><input name="coTenants" placeholder="Whole Foods, Equinox, Bob's…"></div>
+      </div>
+    </section>
+
+    <section class="card p-6 step hide" data-step="5">
+      <h2 class="text-lg font-extrabold mb-1">Assets Checklist</h2>
+      <p class="text-sm text-gray-500 mb-4">Check what you're providing. Unchecked = marketing action item.</p>
+      <div id="assets">
+        <label class="checkrow" style="text-transform:none"><input type="checkbox" name="asset" value="Professional photos"><span class="text-sm font-medium">Professional photos</span></label>
+        <label class="checkrow" style="text-transform:none"><input type="checkbox" name="asset" value="Floor plans (per suite)"><span class="text-sm font-medium">Floor plans (per suite)</span></label>
+        <label class="checkrow" style="text-transform:none"><input type="checkbox" name="asset" value="Site / survey plan"><span class="text-sm font-medium">Site / survey plan</span></label>
+        <label class="checkrow" style="text-transform:none"><input type="checkbox" name="asset" value="Existing flyer / brochure"><span class="text-sm font-medium">Existing flyer / brochure</span></label>
+        <label class="checkrow" style="text-transform:none"><input type="checkbox" name="asset" value="Aerial / location map"><span class="text-sm font-medium">Aerial / location map</span></label>
+        <label class="checkrow" style="text-transform:none"><input type="checkbox" name="asset" value="Building gallery photos"><span class="text-sm font-medium">Building gallery photos</span></label>
+        <label class="checkrow" style="text-transform:none"><input type="checkbox" name="asset" value="Broker headshots / bios"><span class="text-sm font-medium">Broker headshots / bios</span></label>
+      </div>
+      <div class="field"><label>Marketing recipient email</label><input name="marketingEmail" placeholder="marketing@holiner.com"></div>
+      <div class="field"><label>Anything else marketing should know</label><textarea name="notes" rows="3" placeholder="Deadlines, sensitivities…"></textarea></div>
+    </section>
+
+    <div class="flex items-center justify-between mt-5">
+      <button type="button" id="backBtn" class="btn btn-g hide">← Back</button>
+      <div class="flex-1"></div>
+      <button type="button" id="nextBtn" class="btn btn-p">Next →</button>
+      <button type="button" id="genBtn" class="btn btn-p hide">✦ Generate Brief</button>
+    </div>
+  </form>
+
+  <section id="briefView" class="card p-6 mt-5 hide brief">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="text-lg font-extrabold">Marketing Brief</h2>
+      <span class="chip" style="color:var(--green)">Ready to send</span>
+    </div>
+    <div class="rounded-xl p-4 border" style="background:#faf9f3;border-color:#ece8db"><pre id="briefText"></pre></div>
+    <div class="flex flex-wrap gap-3 mt-4">
+      <button type="button" id="sendBtn" class="btn btn-p">Send to Marketing</button>
+      <button type="button" id="copyBtn" class="btn btn-g">Copy brief</button>
+      <button type="button" id="editBtn" class="btn btn-g">← Edit</button>
+    </div>
+    <p id="sendNote" class="text-xs text-gray-500 mt-3"></p>
+  </section>
+</div>
+
+<script>
+const steps=Array.from(document.querySelectorAll('.step'));
+const total=steps.length, titles=["Basics","Building","Pricing","Flyer","Channels","Logistics","Assets"];
+const subs=["Step 1","Step 2","Step 3","Step 4","Step 5","Step 6","Step 7"];
+let current=0;
+const steprow=document.getElementById('steprow');
+const backBtn=document.getElementById('backBtn'), nextBtn=document.getElementById('nextBtn'), genBtn=document.getElementById('genBtn');
+
+function val(n){ const e=document.querySelector(`[name="${n}"]`); return e?e.value.trim():""; }
+function checks(n){ return Array.from(document.querySelectorAll(`[name="${n}"]:checked`)).map(e=>e.value); }
+
+/* step nav cards */
+function renderSteps(){
+  steprow.innerHTML="";
+  steps.forEach((s,i)=>{
+    const c=document.createElement('div');
+    c.className="stepcard"+(i===current?" active":"")+(i<current?" done":"");
+    c.innerHTML=`<div class="flex items-center gap-2"><div class="num">${i<current?'✓':i+1}</div><div><div class="lbl">${titles[i]}</div><div class="sub">${subs[i]}</div></div></div>`;
+    c.onclick=()=>show(i);
+    steprow.appendChild(c);
+  });
+}
+function show(i){
+  steps.forEach((s,idx)=>s.classList.toggle('hide',idx!==i));
+  backBtn.classList.toggle('hide',i===0);
+  nextBtn.classList.toggle('hide',i===total-1);
+  genBtn.classList.toggle('hide',i!==total-1);
+  current=i; renderSteps(); updateSummary();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+nextBtn.onclick=()=>{ if(current<total-1) show(current+1); };
+backBtn.onclick=()=>{ if(current>0) show(current-1); };
+
+/* suites */
+const suitesEl=document.getElementById('suites');
+function addSuiteRow(d={}){
+  const r=document.createElement('div'); r.className="suite-row";
+  r.innerHTML=`<input placeholder="300" value="${d.suite||''}" data-k="suite">
+    <input placeholder="3rd" value="${d.floor||''}" data-k="floor">
+    <input placeholder="1,599" value="${d.sf||''}" data-k="sf">
+    <select data-k="status"><option ${d.status==='Available'?'selected':''}>Available</option><option ${d.status==='LOI Out'?'selected':''}>LOI Out</option><option ${d.status==='Leased'?'selected':''}>Leased</option></select>
+    <input placeholder="$30/SF" value="${d.rent||''}" data-k="rent"><div class="x">✕</div>`;
+  r.querySelector('.x').onclick=()=>{ r.remove(); updateSummary(); };
+  r.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',updateSummary));
+  suitesEl.appendChild(r);
+}
+document.getElementById('addSuite').onclick=()=>addSuiteRow();
+function getSuites(){ return Array.from(suitesEl.querySelectorAll('.suite-row')).map(r=>{const o={};r.querySelectorAll('[data-k]').forEach(i=>o[i.dataset.k]=i.value.trim());return o;}).filter(s=>s.suite||s.sf); }
+
+/* live summary */
+const REQ=['propName','address','propType','broker','totalSF'];
+function chip(k,v){ return `<span class="chip ${v?'':'empty'}"><span class="k">${k}</span>${v||'·'}</span>`; }
+function updateSummary(){
+  document.getElementById('sumTitle').textContent=val('propName')||'Your property name…';
+  document.getElementById('sumTitle').style.color=val('propName')?'var(--ink)':'#cfcabb';
+  document.getElementById('sumAddr').textContent=val('address')||'address, city, state';
+  const suites=getSuites(); const avail=suites.filter(s=>s.status!=='Leased').length;
+  document.getElementById('sumChips').innerHTML=
+    chip('Type',val('propType'))+
+    chip('Total SF',val('totalSF'))+
+    chip('Suites',suites.length?`${avail} available / ${suites.length}`:'')+
+    chip('Range',val('sfRange'))+
+    chip('Rent',val('rent'))+
+    chip('Launch',val('launchDate'));
+  // progress: required + has suite + has any flyer/channel content
+  let done=REQ.filter(k=>val(k)).length + (suites.length?1:0);
+  let totalC=REQ.length+1;
+  document.getElementById('pct').textContent=Math.round(done/totalC*100)+"% complete";
+}
+document.getElementById('form').addEventListener('input',updateSummary);
+
+/* brief */
+function line(l,v){ return v?`${l}: ${v}\n`:""; }
+function bullets(v){ return v? v.split('\n').filter(x=>x.trim()).map(x=>"    • "+x.trim()).join('\n')+'\n':""; }
+function buildBrief(){
+  const portals=checks('portal'),provided=checks('asset');
+  const all=Array.from(document.querySelectorAll('[name="asset"]')).map(e=>e.value);
+  const missing=all.filter(a=>!provided.includes(a)); const suites=getSuites();
+  let b="HOLINER COMMERCIAL — NEW LEASE LISTING\nMarketing Brief & Action Items\n"+"=".repeat(48)+"\n\n";
+  b+="1) DEAL BASICS\n"+line("  Property",val('propName'))+line("  Address",val('address'))+line("  Type",val('propType'))+line("  Listing broker(s)",val('broker'))+line("  Owner",val('owner'))+line("  Owner contact",val('ownerContact'))+line("  Target launch",val('launchDate'));
+  b+="\n2) BUILDING & SUITES\n"+line("  Total SF",val('totalSF'))+line("  SF range",val('sfRange'))+line("  Year built/reno",val('yearBuilt'))+line("  Parking",val('parking'))+line("  Zoning",val('zoning'))+line("  Ceiling/docks",val('ceiling'));
+  if(suites.length){ b+="  Available suites:\n"; suites.forEach(s=>b+=`    - Suite ${s.suite||'?'} (${s.floor||'?'}) · ${s.sf||'?'} SF · ${s.status||''}${s.rent?' · '+s.rent:''}\n`); }
+  b+="\n3) PRICING & TERMS\n"+line("  Rate display",val('pricePublic'))+line("  Asking rent",val('rent'))+line("  Structure",val('rentType'))+line("  NNN/CAM",val('nnn'))+line("  Term",val('term'))+line("  Escalations",val('escalations'))+line("  TI",val('ti'))+line("  Free rent",val('freeRent'))+line("  Available",val('availDate'))+line("  Commission",val('commission'));
+  b+="\n4) FLYER\n"+line("  Cover headline",val('flyerHeadline'));
+  if(val('theSpace')) b+="  THE SPACE:\n"+bullets(val('theSpace'));
+  if(val('buildingFeatures')) b+="  BUILDING FEATURES:\n"+bullets(val('buildingFeatures'));
+  if(val('locationAccess')) b+="  LOCATION & ACCESS:\n"+bullets(val('locationAccess'));
+  b+=line("  Map landmarks",val('landmarks'))+line("  Photos/floor plans",val('photoStatus'));
+  if(val('flyerContact')) b+="  Contact block:\n"+bullets(val('flyerContact'));
+  b+="\n5) CHANNELS\n"+line("  Blast audience",val('blastAudience'))+line("  Blast headline",val('blastHeadline'))+line("  Social",val('social'))+line("  Social handles",val('socialHandles'))+line("  Portals",portals.join(', '))+line("  Portal notes",val('portalNotes'));
+  b+="\n6) APPROVALS & LOGISTICS\n"+line("  Owner approval",val('ownerApproval'))+line("  Confidentiality",val('confidential'))+line("  Broker license #",val('licenseNum'))+line("  Disclosures",val('disclaimers'))+line("  Asset files",val('assetLink'))+line("  Budget cap",val('budgetCap'))+line("  Listing expires",val('listingExpiration'))+line("  Showing instructions",val('showingInstructions'))+line("  Virtual tour",val('tourLink'));
+  b+="\n7) LOCATION SELLING\n"+line("  Submarket",val('submarket'))+line("  Traffic/demographics",val('trafficDemo'))+line("  Co-tenants/anchors",val('coTenants'));
+  b+="\n8) ASSETS\n"+line("  Provided",provided.join(', ')||"none checked");
+  b+="\n"+"-".repeat(48)+"\nACTION ITEMS FOR MARKETING\n"+"-".repeat(48)+"\n";
+  let n=1;
+  b+=`  ${n++}. Build flyer to Holiner template: cover → THE SPACE / BUILDING FEATURES / LOCATION & ACCESS → floor-plan pages (tag suites + LEASED) → location map → spec-suite interiors → gallery → contact page.\n`;
+  if(suites.length) b+=`  ${n++}. Floor plans: tag ${suites.length} suite(s) with SF + status.\n`;
+  if(val('blastAudience')||val('blastHeadline')) b+=`  ${n++}. Draft email blast to ${val('blastAudience')||'target list'} — angle: ${val('blastHeadline')||'TBD'}.\n`;
+  if(val('social')) b+=`  ${n++}. Social post — ${val('social')}.\n`;
+  if(portals.length) b+=`  ${n++}. Post to: ${portals.join(', ')}.\n`;
+  if(missing.length) b+=`  ${n++}. SOURCE MISSING ASSETS: ${missing.join(', ')}.\n`;
+  if(/Withhold/i.test(val('pricePublic'))) b+=`  ${n++}. Pricing: display "Call for pricing" - do NOT publish the rate.\n`;
+  if(/Include/i.test(val('disclaimers'))||val('licenseNum')) b+=`  ${n++}. Add TREC IABS, broker license #${val('licenseNum')?' ('+val('licenseNum')+')':''}, and standard disclaimer to ALL materials.\n`;
+  if(val('ownerApproval')) b+=`  ${n++}. Route all materials to ${val('ownerApproval')} for written owner approval BEFORE publishing.\n`;
+  if(/Quiet|not name/i.test(val('confidential'))) b+=`  ${n++}. Confidentiality: ${val('confidential')} - adjust public materials accordingly.\n`;
+  if(val('assetLink')) b+=`  ${n++}. Asset files location: ${val('assetLink')}.\n`;
+  if(val('budgetCap')) b+=`  ${n++}. Stay within marketing budget cap: ${val('budgetCap')}.\n`;
+  if(val('listingExpiration')) b+=`  ${n++}. Set portal takedown reminder for listing expiration: ${val('listingExpiration')}.\n`;
+  if(val('showingInstructions')) b+=`  ${n++}. Tours: ${val('showingInstructions')}.\n`;
+  if(val('notes')) b+="\nNOTES FROM BROKER\n  "+val('notes')+"\n";
+  return b;
+}
+genBtn.onclick=()=>{
+  const miss=[['propName','Property name'],['address','Address'],['propType','Type'],['broker','Broker'],['totalSF','Total SF']].filter(([k])=>!val(k)).map(([,l])=>l);
+  if(!getSuites().length) miss.push('At least one suite');
+  if(miss.length){ alert("Please fill:\n• "+miss.join("\n• ")); return; }
+  document.getElementById('briefText').textContent=buildBrief();
+  document.getElementById('form').classList.add('hide'); steprow.classList.add('hide');
+  document.getElementById('briefView').classList.remove('hide');
+  window.scrollTo({top:0,behavior:'smooth'});
+};
+document.getElementById('editBtn').onclick=()=>{ document.getElementById('briefView').classList.add('hide'); document.getElementById('form').classList.remove('hide'); steprow.classList.remove('hide'); show(total-1); };
+document.getElementById('copyBtn').onclick=async()=>{ await navigator.clipboard.writeText(document.getElementById('briefText').textContent); document.getElementById('sendNote').textContent="Brief copied."; };
+document.getElementById('sendBtn').onclick=()=>{
+  const to=val('marketingEmail')||DEFAULT_MARKETING_EMAIL;
+  const subject=`New Lease Listing — ${val('propName')||'Untitled'} (${val('address')||''})`;
+  const body=document.getElementById('briefText').textContent, note=document.getElementById('sendNote');
+  if(EMAILJS_PUBLIC_KEY&&EMAILJS_SERVICE_ID&&EMAILJS_TEMPLATE_ID){
+    try{ emailjs.init({publicKey:EMAILJS_PUBLIC_KEY}); emailjs.send(EMAILJS_SERVICE_ID,EMAILJS_TEMPLATE_ID,{to_email:to,subject,message:body,broker:val('broker')}).then(()=>note.textContent="✓ Sent to "+to).catch(()=>{note.textContent="Auto-send failed, opening email…";mailto(to,subject,body);}); }
+    catch(e){ mailto(to,subject,body); }
+  } else { mailto(to,subject,body); note.textContent="Opened your email client to "+to+". (Add EmailJS keys for true one-click send.)"; }
+};
+function mailto(to,s,b){ window.location.href=`mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(s)}&body=${encodeURIComponent(b)}`; }
+
+/* prefill */
+const DEMO={propName:"4525 Lemmon Avenue",address:"4525 Lemmon Avenue, Dallas, TX 75219",propType:"Office & Medical",broker:"Yosef Drizin; David Holiner",owner:"Oxford Capital Partners LLC",ownerContact:"4525 Lemmon Ave Ste 210, Dallas, TX 75219",totalSF:"29,246",sfRange:"1,037 – 3,684 RSF",yearBuilt:"Extensively Remodeled 2023",parking:"3.1/1,000, covered & gated",commission:"4.5% standalone / 6.75% with co-broke (3% on sale)",flyerHeadline:"FOR LEASE — 4525 Lemmon Avenue",theSpace:"Quiet Luxury Quality\nMid-Century Modern Aesthetics\nMove-in Ready Spec Suites\nOffice & Medical Available\nExtensively Remodeled 2023\nLocally Owned & Operated",buildingFeatures:"Covered and Gated Parking\nLarge Covered Tenant & Visitor Parking\nOn-Site Security\n3.1/1,000 Parking",locationAccess:"Immediate Access to the Tollway\nAcross from Whole Foods & Nonna's\nEasy Access to Highland Park & Uptown",landmarks:"Whole Foods, Highland Park Village, Katy Trail, Knox+Henderson, Equinox, Medical District, UT Southwestern, Parkland, Dallas Love Field, Dallas North Tollway",photoStatus:"All attached / in shared drive",flyerContact:"Yosef Drizin, Associate, yosef@holiner.com, (214) 535-2277\nDavid Holiner, CEO | Founder, david@holiner.com, (214) 403-0466",blastAudience:"Office & medical tenant reps in DFW (Uptown / Park Cities / Medical District)",blastHeadline:"Move-in ready spec suites on Lemmon — office & medical, across from Whole Foods",social:"Quiet-luxury mid-century office, remodeled 2023, walk to Whole Foods & Katy Trail",notes:"Building ~89% leased, five spec suites remain. Local ownership, fast decisions.",
+pricePublic:"Withhold (Call for pricing)",ownerApproval:"David Holiner confirms with Oxford Capital before publishing",confidential:"Public listing",disclaimers:"Include TREC IABS + license # + standard disclaimer",assetLink:"SharePoint > Listings > 4525 Lemmon Ave",budgetCap:"$5,000 (per listing agreement)",showingInstructions:"Contact Yosef (214) 535-2277 to schedule; suites are vacant, move-in ready",tourLink:"",submarket:"Oak Lawn / Uptown, minutes to Medical District",trafficDemo:"",coTenants:"Whole Foods, Equinox, Bob's Steak & Chop House nearby; Cult Aesthetics in building",socialHandles:"@holinerholdings"};
+const DEMO_SUITES=[{suite:"300",floor:"3rd",sf:"1,599",status:"Available"},{suite:"330",floor:"3rd",sf:"1,048",status:"Available"},{suite:"360",floor:"3rd",sf:"1,037",status:"Available"},{suite:"365",floor:"3rd",sf:"1,624",status:"Available"},{suite:"220",floor:"2nd",sf:"2,257",status:"Available"}];
+document.getElementById('demoBtn').onclick=()=>{
+  Object.entries(DEMO).forEach(([k,v])=>{const el=document.querySelector(`[name="${k}"]`);if(el)el.value=v;});
+  suitesEl.innerHTML=""; DEMO_SUITES.forEach(addSuiteRow);
+  document.querySelectorAll('[name="portal"]').forEach(c=>c.checked=["LoopNet","Crexi","CoStar"].includes(c.value));
+  document.querySelectorAll('[name="asset"]').forEach(c=>c.checked=["Professional photos","Floor plans (per suite)","Aerial / location map","Building gallery photos","Broker headshots / bios","Existing flyer / brochure"].includes(c.value));
+  document.querySelector('[name="marketingEmail"]').value=DEFAULT_MARKETING_EMAIL;
+  show(0);
+};
+
+/* init */
+document.querySelector('[name="marketingEmail"]').placeholder=DEFAULT_MARKETING_EMAIL;
+addSuiteRow(); renderSteps(); show(0); updateSummary();
+</script>
+</body>
+</html>
