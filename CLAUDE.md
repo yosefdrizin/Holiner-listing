@@ -6,15 +6,44 @@ Pages: **[index.html](index.html)** (~1MB). It's the "Holiner Listing Launchpad"
 that opens to a **"Choose a representation"** hub (Tenant / Landlord / Buyer / Seller). All navigation is
 internal React `view` state inside this one file — there is no URL routing and no separate pages.
 
-Currently built out — **Landlord Rep** has three working tools:
-- **Lease Listing** (`view: 'form'`) — the marketing-brief form.
-- **Exclusive Agreement** (`view: 'agreement'`) — document preview + Word `.docx` export.
-- **Letter of Intent ▸ Office** (`view: 'loi'`) — the Office LOI builder (preview + Word `.docx`).
+**All four reps are built out** (13 working tools):
+- **Landlord Rep** — Lease Listing (`view: 'form'`, the original multi-step marketing brief), Exclusive
+  Agreement (`view: 'agreement'`), Letter of Intent (`view: 'loiAsset'` → `'loi'`, all four asset classes).
+- **Tenant Rep** — Client Intake / Requirement Builder (intake engine), Letter of Intent (same LOI builder
+  with `side: 'tenant'`), Exclusive Agreement + Commission Agreement (doc engine).
+- **Buyer Rep** — Client Intake (intake engine), Buyer Representative Agreement, Offer to Purchase
+  (buyer-favorable purchase LOI), Commission Agreement (all doc engine).
+- **Seller Rep** — Client Intake + Sale Listing brief (intake engine), Seller Exclusive Agreement, Offer to
+  Purchase (seller-favorable), Commission Agreement (doc engine).
 
-Other reps, document types, and LOI asset classes (Medical / Retail / Industrial) show a "coming soon"
-state. The entire site is this one file. (History: we briefly split the app into an outer hub —
+The entire site is this one file. (History: we briefly split the app into an outer hub —
 `index.html` cards plus `landlord-rep.html` — but it duplicated the app's built-in hub and caused a
 confusing loop, so it was removed; `listing-agreement.html`, an identical copy, was removed too.)
+
+## The two generic engines (how 10 of the 13 tools work)
+Most tools are **configs, not bespoke code**. To change a tool's fields, sections, or wording, edit its
+config in the component constructor — the views and Word export follow automatically.
+- **Intake engine** (`view: 'intake'`): schema-driven form → composed email brief (Copy / mailto "Send to
+  team"). Configs live in **`this.INTAKES`** (`tenantIntake`, `buyerIntake`, `sellerIntake`, `saleListing`).
+  Each config is `{crumb, title, intro, heading, subjectPrefix, subjectField, recipient, fields}` where
+  `fields` mixes header rows `{hdr, sub}` and field rows `{k, label, ph, area?}`. Only filled fields are
+  included in the email. Drafts save to `localStorage` per config key (`holiner_intake_<key>_v1`).
+- **Doc engine** (`view: 'doc'`): schema-driven document builder → live preview + Word `.docx` via
+  **`window.RepDocTemplate`** (defined in `_defineRepDocTemplate()`). Configs live in **`this.DOCS`**
+  (`tenantRep`, `tenantCommission`, `buyerRep`, `buyerOffer`, `buyerCommission`, `sellerExclusive`,
+  `sellerOffer`, `sellerCommission`). Two styles: **`'agreement'`** (titled, numbered sections, dual
+  signature blocks) and **`'letter'`** (LOI-style letter with the two-column clause table and an
+  acceptance block). Fields carry `tok: ['[Token]']` lists — a filled field auto-replaces its tokens in
+  every section; unresolved `[tokens]` trigger the placeholder warning. Sections are editable/removable
+  in the edit view and reorderable (arrows + drag) in the preview. Empty sections are omitted and
+  numbering re-flows. Drafts: `holiner_doc_<key>_v1`.
+
+## The lease LOI is side-aware
+`loi.side` is `'landlord'` or `'tenant'` (set by which rep opened it; separate drafts:
+`holiner_office_loi_draft_v1` vs `holiner_tenant_loi_draft_v1`). `buildLoiBlocks` flips the opening
+paragraph, brokerage recognition, agency disclosure, and the acceptance block by side. Tenant-favorable
+clauses (ids 200+, `side: 'tenant'` in `this.LIB`) and the "Tenant-Favorable" tier chip appear only on
+the tenant side.
 
 ## Navigation pattern: Rep → Document Type → (Asset Class) → Builder
 Navigation is internal `view` state. The levels:
@@ -35,8 +64,10 @@ trio. One block model feeds both preview and Word so they never diverge; both us
 `window.docx` library plus shared letterhead / page-number / Times-New-Roman idioms. Each registers on
 `window`:
 - **`window.AgreementTemplate`** — Exclusive Agreement (a bundled asset, loaded via a blob `<script src>`).
-- **`window.LoiTemplate`** — Office LOI. Defined in `index.html` as the component method
+- **`window.LoiTemplate`** — the lease LOI (both sides). Defined in `index.html` as the component method
   **`_defineLoiTemplate()`**, called from `componentDidMount`.
+- **`window.RepDocTemplate`** — the generic doc engine (all rep agreements, commission agreements, and
+  offers to purchase). Defined as **`_defineRepDocTemplate()`**, called from `componentDidMount`.
 
 ### ⚠️ Gotcha — define new doc-modules INSIDE the component, NOT as inline `<helmet>` scripts
 The DC framework **transforms inline `<helmet>` `<script>` tags**. That transform corrupts module code and
