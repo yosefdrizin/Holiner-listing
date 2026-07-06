@@ -15,10 +15,9 @@
   body{margin:0;background:var(--paper);color:var(--ink);
     font-family:'Albert Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
   a{color:var(--green-deep)}
-  .wrap{max-width:1080px;margin:0 auto;padding:26px clamp(16px,4vw,40px) 100px}
+  .wrap{max-width:1120px;margin:0 auto;padding:26px clamp(16px,4vw,40px) 100px}
 
-  /* header */
-  header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:26px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px}
   .brand{display:flex;align-items:center;gap:13px}
   .mark{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#8CB47A,#5C8050);
     display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:22px;
@@ -37,19 +36,16 @@
   .btn[disabled]{opacity:.5;cursor:not-allowed}
   .btn.wide{width:100%;justify-content:center;display:flex;align-items:center;gap:8px}
 
-  .lede{font-size:15px;color:var(--soft);max-width:70ch;margin:0 0 26px}
-
-  /* layout */
+  .lede{font-size:15px;color:var(--soft);max-width:72ch;margin:0 0 24px}
   .grid{display:grid;grid-template-columns:1fr;gap:20px}
-  @media(min-width:920px){.grid{grid-template-columns:340px 1fr;align-items:start}}
+  @media(min-width:960px){.grid{grid-template-columns:330px 1fr;align-items:start}}
   .card{background:var(--card);border:1px solid var(--line2);border-radius:18px;padding:22px;box-shadow:var(--shadow)}
+  .card+.card{margin-top:20px}
   .card h2{margin:0 0 4px;font-size:16px;font-weight:800;letter-spacing:-.005em}
   .card .hint{font-size:12.5px;color:var(--faint);margin:0 0 16px}
   .eyebrow{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--tan);font-weight:700;margin-bottom:12px}
 
-  /* dropzone */
-  .drop{border:2px dashed var(--line);border-radius:14px;padding:26px 16px;text-align:center;background:var(--card2);
-    transition:border-color .16s,background .16s;cursor:pointer}
+  .drop{border:2px dashed var(--line);border-radius:14px;padding:24px 16px;text-align:center;background:var(--card2);transition:border-color .16s,background .16s;cursor:pointer}
   .drop.hot{border-color:var(--green);background:#EAF1E4}
   .drop .big{font-weight:700;font-size:14px}
   .drop .small{font-size:12px;color:var(--faint);margin-top:4px}
@@ -60,34 +56,44 @@
 
   .divider{height:1px;background:var(--line2);margin:18px 0}
   textarea,input,select{font:inherit;width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 11px;background:#fff;color:var(--ink)}
-  textarea{min-height:96px;resize:vertical}
+  textarea{min-height:82px;resize:vertical}
   textarea:focus,input:focus,select:focus{outline:none;border-color:var(--green)}
   label{display:flex;flex-direction:column;gap:6px}
   .lab{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);font-weight:700}
-
   .fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}
   .fields .full{grid-column:1/-1}
+  .fields .third{grid-column:span 1}
   @media(max-width:560px){.fields{grid-template-columns:1fr}}
   .section-title{font-size:13px;font-weight:800;letter-spacing:-.005em;margin:6px 0 12px;display:flex;align-items:center;gap:9px}
   .section-title::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--green)}
+
   .commission-box{grid-column:1/-1;background:var(--card2);border:1px solid var(--line2);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
   .commission-box .amt{font-size:26px;font-weight:800;color:var(--green-deep);font-variant-numeric:tabular-nums}
   .commission-box .cap{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:700}
+  .commission-box .sub2{font-size:12px;color:var(--soft);margin-top:2px}
+
+  .sched-wrap{overflow-x:auto;margin-top:14px;border:1px solid var(--line2);border-radius:12px}
+  table.sched{width:100%;border-collapse:collapse;font-size:12px;min-width:640px}
+  table.sched th{background:var(--card2);text-align:right;padding:8px 9px;font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--faint);font-weight:700;border-bottom:1px solid var(--line2)}
+  table.sched th:first-child{text-align:left}
+  table.sched td{padding:6px 9px;text-align:right;border-bottom:1px solid var(--line2);font-variant-numeric:tabular-nums;white-space:nowrap}
+  table.sched td:first-child{text-align:left}
+  table.sched tr:last-child td{border-bottom:none}
+  table.sched input{width:78px;padding:4px 6px;text-align:right;font-size:12px}
+  table.sched .totrow td{font-weight:800;background:var(--card2);border-top:2px solid var(--line)}
 
   .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
-  .result{margin-top:16px;border-radius:12px;padding:0;overflow:hidden;display:none}
+  .result{margin-top:16px;border-radius:12px;overflow:hidden;display:none}
   .result.show{display:block}
   .result.ok{background:#EAF1E4;border:1px solid color-mix(in srgb,var(--green) 40%,transparent)}
   .result.err{background:var(--warnbg);border:1px solid color-mix(in srgb,var(--warn) 34%,transparent)}
   .result .inner{padding:14px 16px;font-size:13.5px}
   .result a{font-weight:700}
-
-  .prompt-actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+  .muted{color:var(--faint)}
   .coming{display:inline-flex;align-items:center;gap:7px;font-size:11px;color:var(--faint);font-weight:600;margin-top:10px}
   .coming .dot{width:6px;height:6px;border-radius:50%;background:var(--tan)}
-  .foot{margin-top:34px;font-size:12px;color:var(--faint);border-top:1px solid var(--line2);padding-top:16px;max-width:75ch}
-  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--paper);
-    padding:11px 20px;border-radius:12px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:50;box-shadow:var(--shadow2)}
+  .foot{margin-top:34px;font-size:12px;color:var(--faint);border-top:1px solid var(--line2);padding-top:16px;max-width:78ch}
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--paper);padding:11px 20px;border-radius:12px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:50;box-shadow:var(--shadow2)}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
 </head>
@@ -98,318 +104,406 @@
       <div class="mark">H</div>
       <div>
         <h1>Deal Desk</h1>
-        <div class="sub">Holiner · Capture → Invoice → CRM</div>
+        <div class="sub">Holiner &middot; Capture &rarr; Invoice &rarr; CRM</div>
       </div>
     </div>
     <div class="hgroup">
       <span class="envbadge" id="envBadge">Sandbox</span>
-      <a class="btn ghost" href="index.html">← Launchpad</a>
+      <a class="btn ghost" href="index.html">&larr; Launchpad</a>
     </div>
   </header>
 
-  <p class="lede">Turn a signed deal into a logged CRM record in a couple of minutes. Drop in the documents, fill or paste the details, and save it straight to your Holiner CRM — the commission math and the contact/deal link are handled for you.</p>
+  <p class="lede">Capture a signed deal, generate the Holiner commission invoice, and log it to the CRM &mdash; commission math and the contact/deal link are handled for you.</p>
 
   <div class="grid">
-    <!-- LEFT: documents + AI -->
-    <div class="card">
-      <div class="eyebrow">Step 1 · Documents</div>
-      <h2>Drop the paperwork</h2>
-      <p class="hint">LOI, commission agreement, exclusive, lease abstract — anything for this deal.</p>
-      <div class="drop" id="drop">
-        <div class="big">Drag files here</div>
-        <div class="small">or click to choose · PDF, Word, images</div>
-        <input type="file" id="fileInput" multiple style="display:none">
+    <!-- LEFT column -->
+    <div>
+      <div class="card">
+        <div class="eyebrow">Step 1 &middot; Documents</div>
+        <h2>Drop the paperwork</h2>
+        <p class="hint">LOI, commission agreement, exclusive, lease abstract.</p>
+        <div class="drop" id="drop">
+          <div class="big">Drag files here</div>
+          <div class="small">or click to choose</div>
+          <input type="file" id="fileInput" multiple style="display:none">
+        </div>
+        <ul class="files" id="fileList"></ul>
       </div>
-      <ul class="files" id="fileList"></ul>
 
-      <div class="divider"></div>
-      <div class="eyebrow">Fill the details with your own Claude — free</div>
-      <p class="hint">Use your Claude subscription by hand: copy the prompt, paste it into claude.ai along with the document, then paste Claude's answer back here.</p>
-      <div class="prompt-actions">
-        <button class="btn" id="copyPrompt">Copy prompt for Claude</button>
+      <div class="card">
+        <div class="eyebrow">Fill details with your own Claude &mdash; free</div>
+        <p class="hint">Copy the prompt, paste it into claude.ai with the document, then paste Claude&rsquo;s answer back here.</p>
+        <button class="btn wide" id="copyPrompt">Copy prompt for Claude</button>
+        <textarea id="pasteBox" style="margin-top:10px" placeholder="Paste Claude JSON answer here, then click below."></textarea>
+        <button class="btn wide" id="parsePaste" style="margin-top:10px">Fill fields from paste</button>
+        <div class="coming"><span class="dot"></span> Auto-extract (AI, hands-free) &mdash; unlocks when the Claude API is approved</div>
+        <button class="btn wide" disabled style="margin-top:8px">&#9889; Auto-extract with AI (coming soon)</button>
       </div>
-      <textarea id="pasteBox" placeholder="Paste Claude's JSON answer here, then click Fill fields…"></textarea>
-      <button class="btn wide" id="parsePaste" style="margin-top:10px">Fill fields from paste</button>
-
-      <div class="coming"><span class="dot"></span> Auto-extract (AI, hands-free) — unlocks when Claude API is approved</div>
-      <button class="btn wide" disabled style="margin-top:10px">⚡ Auto-extract with AI (coming soon)</button>
     </div>
 
-    <!-- RIGHT: the form -->
-    <div class="card">
-      <div class="eyebrow">Step 2 · Review &amp; confirm</div>
-      <div class="section-title">Contact</div>
-      <div class="fields">
-        <label><span class="lab">Contact name</span><input id="c_name" placeholder="Jane Tenant"></label>
-        <label><span class="lab">Company</span><input id="c_company" placeholder="Acme Holdings"></label>
-        <label><span class="lab">Email</span><input id="c_email" type="email" placeholder="jane@acme.com"></label>
-        <label><span class="lab">Phone</span><input id="c_phone" placeholder="(214) 555-0100"></label>
-        <label class="full"><span class="lab">Contact type</span>
-          <select id="c_type">
-            <option value="">—</option>
-            <option>Buyer</option><option>Seller</option><option>Tenant</option>
-            <option>Landlord</option><option>Broker</option><option>Buyer &amp; Seller</option>
-          </select>
-        </label>
-      </div>
-
-      <div class="divider"></div>
-      <div class="section-title">Deal</div>
-      <div class="fields">
-        <label class="full"><span class="lab">Deal name</span><input id="d_name" placeholder="Acme — Preston Center Office Lease"></label>
-        <label><span class="lab">Deal type</span>
-          <select id="d_type">
-            <option value="">—</option>
-            <option>Tenant Rep</option><option>Landlord Rep</option><option>Buyer Rep</option>
-            <option>Seller Rep</option><option>Leasing Rep</option>
-          </select>
-        </label>
-        <label><span class="lab">Stage</span>
-          <select id="d_stage">
-            <option>Executed</option><option>Lead</option><option>Conversation</option>
-            <option>Touring</option><option>LOI</option><option>Negotiations</option>
-            <option>Lease</option><option>Dead</option>
-          </select>
-        </label>
-        <label><span class="lab">Asset type</span>
-          <select id="d_asset">
-            <option value="">—</option>
-            <option>Office</option><option>Retail</option><option>Industrial</option>
-            <option>Land</option><option>Shopping Center</option><option>Health Care</option>
-            <option>F&amp;B</option><option>Manufacturing</option>
-          </select>
-        </label>
-        <label><span class="lab">Broker</span>
-          <select id="d_broker">
-            <option value="">—</option>
-            <option>David Holiner</option><option>Yosef Drizin</option><option>Michele Kornbluth</option>
-          </select>
-        </label>
-        <label class="full"><span class="lab">Property address</span><input id="d_address" placeholder="8080 Park Ln, Dallas, TX"></label>
-        <label><span class="lab">Deal value ($)</span><input id="d_value" inputmode="decimal" placeholder="480000"></label>
-        <label><span class="lab">Commission rate</span><input id="d_rate" placeholder="4%  or  $2.00/SF"></label>
-        <div class="commission-box">
-          <div>
-            <div class="cap">Commission owed</div>
-            <div class="amt" id="d_commission">$0</div>
-          </div>
-          <label style="flex:1;min-width:160px"><span class="lab">Override amount ($)</span><input id="d_commission_override" inputmode="decimal" placeholder="auto — edit to override"></label>
+    <!-- RIGHT column -->
+    <div>
+      <div class="card">
+        <div class="eyebrow">Step 2 &middot; Contact &amp; deal</div>
+        <div class="section-title">Contact</div>
+        <div class="fields">
+          <label><span class="lab">Contact name</span><input id="c_name" placeholder="Jane Tenant"></label>
+          <label><span class="lab">Company</span><input id="c_company" placeholder="Acme Holdings"></label>
+          <label><span class="lab">Email</span><input id="c_email" type="email" placeholder="jane@acme.com"></label>
+          <label><span class="lab">Phone</span><input id="c_phone" placeholder="(214) 555-0100"></label>
+          <label class="full"><span class="lab">Contact type</span>
+            <select id="c_type"><option value="">&mdash;</option><option>Buyer</option><option>Seller</option><option>Tenant</option><option>Landlord</option><option>Broker</option><option>Buyer &amp; Seller</option></select>
+          </label>
         </div>
-        <label><span class="lab">Close date</span><input id="d_close" type="date"></label>
-        <label><span class="lab">Invoice status</span>
-          <select id="d_invoice">
-            <option>Draft</option><option>Not Invoiced</option><option>Sent</option><option>Paid</option>
-          </select>
-        </label>
-        <label class="full"><span class="lab">Notes</span><textarea id="d_notes" placeholder="Anything worth remembering about this deal…"></textarea></label>
+        <div class="divider"></div>
+        <div class="section-title">Deal</div>
+        <div class="fields">
+          <label class="full"><span class="lab">Deal name</span><input id="d_name" placeholder="Acme &mdash; Preston Center Office Lease"></label>
+          <label><span class="lab">Deal type</span>
+            <select id="d_type"><option value="">&mdash;</option><option>Tenant Rep</option><option>Landlord Rep</option><option>Buyer Rep</option><option>Seller Rep</option><option>Leasing Rep</option></select>
+          </label>
+          <label><span class="lab">Stage</span>
+            <select id="d_stage"><option>Executed</option><option>Lead</option><option>Conversation</option><option>Touring</option><option>LOI</option><option>Negotiations</option><option>Lease</option><option>Dead</option></select>
+          </label>
+          <label><span class="lab">Asset type</span>
+            <select id="d_asset"><option value="">&mdash;</option><option>Office</option><option>Retail</option><option>Industrial</option><option>Land</option><option>Shopping Center</option><option>Health Care</option><option>F&amp;B</option><option>Manufacturing</option></select>
+          </label>
+          <label><span class="lab">Broker (CRM)</span>
+            <select id="d_broker"><option value="">&mdash;</option><option>David Holiner</option><option>Yosef Drizin</option><option>Michele Kornbluth</option></select>
+          </label>
+          <div class="commission-box">
+            <div>
+              <div class="cap">Total commission</div>
+              <div class="amt" id="d_commission">$0.00</div>
+              <div class="sub2" id="d_dealvalue_lbl">Deal value &mdash;</div>
+            </div>
+            <label style="flex:1;min-width:150px"><span class="lab">Invoice status</span>
+              <select id="d_invoice"><option>Draft</option><option>Not Invoiced</option><option>Sent</option><option>Paid</option></select>
+            </label>
+          </div>
+          <label><span class="lab">Close date</span><input id="d_close" type="date"></label>
+          <label class="full"><span class="lab">Notes</span><textarea id="d_notes" placeholder="Anything worth remembering."></textarea></label>
+        </div>
       </div>
 
-      <div class="actions">
-        <button class="btn" id="previewInvoice">Preview invoice</button>
-        <button class="btn primary" id="saveCrm">Save to CRM →</button>
-        <button class="btn ghost" id="clearAll">Clear</button>
+      <!-- Invoice / lease schedule -->
+      <div class="card">
+        <div class="eyebrow">Step 3 &middot; Commission invoice (Holiner schedule)</div>
+        <div class="section-title">Bill to &amp; parties</div>
+        <div class="fields">
+          <label><span class="lab">Bill to (name)</span><input id="i_billto" placeholder="Landlord or landlord&rsquo;s agent"></label>
+          <label><span class="lab">Attention</span><input id="i_attn" placeholder="Tim Hughes"></label>
+          <label class="full"><span class="lab">Bill-to address</span><input id="i_billaddr" placeholder="7859 Walnut Hill #375, Dallas, TX 75230"></label>
+          <label><span class="lab">Tenant</span><input id="i_tenant" placeholder="URBANBITE, LLC"></label>
+          <label><span class="lab">Landlord</span><input id="i_landlord" placeholder="VOP Partners, LLC"></label>
+          <label class="full"><span class="lab">Property</span><input id="i_property" placeholder="5100 Belt Line Road, Dallas, TX 75254"></label>
+          <label><span class="lab">Representation type</span>
+            <select id="i_reptype"><option>Tenant</option><option>Landlord</option><option>Buyer</option><option>Seller</option></select>
+          </label>
+          <label><span class="lab">Lead broker</span><input id="i_broker" placeholder="Hudson Donham"></label>
+          <label><span class="lab">Invoice #</span><input id="i_number" placeholder="20261103-1"></label>
+          <label><span class="lab">Invoice date</span><input id="i_date" type="date"></label>
+        </div>
+
+        <div class="divider"></div>
+        <div class="section-title">Lease terms &rarr; auto schedule</div>
+        <div class="fields">
+          <label><span class="lab">Square footage</span><input id="i_sf" inputmode="numeric" placeholder="2008"></label>
+          <label><span class="lab">Lease start date</span><input id="i_start" type="date"></label>
+          <label><span class="lab">Term (months)</span><input id="i_term" inputmode="numeric" placeholder="120"></label>
+          <label><span class="lab">Starting rate / SF ($)</span><input id="i_rate" inputmode="decimal" placeholder="48.00"></label>
+          <label><span class="lab">Escalation (%/yr)</span><input id="i_esc" inputmode="decimal" value="3"></label>
+          <label><span class="lab">Fee (%)</span><input id="i_fee" inputmode="decimal" value="4"></label>
+        </div>
+        <button class="btn wide" id="buildSched" style="margin-top:14px">Build / refresh schedule</button>
+        <div class="sched-wrap" id="schedWrap" style="display:none"><table class="sched" id="schedTable"></table></div>
+        <p class="hint" id="schedHint" style="margin-top:10px">Enter the lease terms above and click Build. You can edit any Rate/SF or Adjustment cell afterward; totals and commission recompute automatically.</p>
+
+        <div class="divider"></div>
+        <div class="section-title">Payment</div>
+        <div class="fields">
+          <label><span class="lab">Structure</span>
+            <select id="i_paymode"><option value="full">Full (two payments)</option><option value="half1">1st half only</option><option value="half2">2nd half only</option></select>
+          </label>
+          <label><span class="lab">Amount received ($)</span><input id="i_received" inputmode="decimal" value="0"></label>
+          <label><span class="lab">1st payment due</span><input id="i_due1" type="date"></label>
+          <label><span class="lab">2nd payment due</span><input id="i_due2" type="date"></label>
+        </div>
+
+        <div class="actions">
+          <button class="btn" id="previewInvoice">Preview / print invoice</button>
+          <button class="btn primary" id="saveCrm">Save to CRM &rarr;</button>
+          <button class="btn ghost" id="clearAll">Clear</button>
+        </div>
+        <div class="result" id="result"><div class="inner" id="resultInner"></div></div>
       </div>
-      <div class="result" id="result"><div class="inner" id="resultInner"></div></div>
     </div>
   </div>
 
   <div class="foot">
-    <strong>Draft / Sandbox.</strong> Saving writes to the throwaway <em>Deal Desk — SANDBOX</em> databases so your real CRM stays clean while we build. Commission auto-calculates when the rate is a percentage (e.g. “4%”); for $/SF or flat fees, type the amount in the override box. The invoice layout is a placeholder until you share your Holiner template. Auto-extract turns on once the Claude API is approved — until then, use the “Copy prompt for Claude” button with your subscription.
+    <strong>Draft / Sandbox.</strong> Saving writes to the throwaway <em>Deal Desk &mdash; SANDBOX</em> databases so your real CRM stays clean while we build. The invoice reproduces the Holiner detailed-schedule format (Annual Rate = un-rounded escalated rate &times; SF; fee applied per year; total split into halves). Free rent / expense reductions go in the Adjustments column. Logo is a placeholder until the real Holiner mark is dropped in. Auto-extract turns on once the Claude API is approved.
   </div>
 </div>
 <div class="toast" id="toast"></div>
 
 <script>
 (function(){
-  var $ = function(id){ return document.getElementById(id); };
-  var files = [];
+  var $=function(id){return document.getElementById(id);};
+  var files=[]; var schedule=[];
 
-  /* ---------- toast ---------- */
+  var HOLINER={
+    entity:"Holiner Holdings, LLC",
+    addr1:"3838 Oak Lawn Ave, Suite 1000",
+    addr2:"Dallas, TX 75219",
+    tel:"(214) 403-0466",
+    email:"info@holinerholdings.com",
+    fedid:"87-2139831",
+    bank:"Encore Bank, 5960 Berkshire Ln, Suite 1100, Dallas, TX 75225",
+    aba:"082008583", acct:"700256738"
+  };
+
   var toastT;
-  function toast(msg){
-    var t=$('toast'); t.textContent=msg; t.classList.add('show');
-    clearTimeout(toastT); toastT=setTimeout(function(){t.classList.remove('show');},2200);
-  }
+  function toast(m){var t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove('show');},2200);}
+  function escapeHtml(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function num(v){return parseFloat(String(v==null?'':v).replace(/[^0-9.\-]/g,''))||0;}
+  function money2(n){return '$'+(Number(n)||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+  function r2(n){return Math.round((Number(n)+Number.EPSILON)*100)/100;}
 
-  /* ---------- file drop ---------- */
-  var drop=$('drop'), fi=$('fileInput');
-  drop.addEventListener('click',function(){ fi.click(); });
-  ['dragenter','dragover'].forEach(function(e){ drop.addEventListener(e,function(ev){ev.preventDefault();drop.classList.add('hot');}); });
-  ['dragleave','drop'].forEach(function(e){ drop.addEventListener(e,function(ev){ev.preventDefault();drop.classList.remove('hot');}); });
-  drop.addEventListener('drop',function(ev){ addFiles(ev.dataTransfer.files); });
-  fi.addEventListener('change',function(){ addFiles(fi.files); fi.value=''; });
-  function addFiles(list){
-    for(var i=0;i<list.length;i++){ files.push(list[i]); }
-    renderFiles();
-  }
-  function renderFiles(){
-    var ul=$('fileList'); ul.innerHTML='';
-    files.forEach(function(f,idx){
-      var li=document.createElement('li');
-      li.innerHTML='📄 <span>'+escapeHtml(f.name)+'</span><span class="x" data-i="'+idx+'">✕</span>';
-      ul.appendChild(li);
-    });
-    Array.prototype.forEach.call(ul.querySelectorAll('.x'),function(x){
-      x.addEventListener('click',function(){ files.splice(+x.getAttribute('data-i'),1); renderFiles(); });
-    });
-  }
+  /* ---- files ---- */
+  var drop=$('drop'),fi=$('fileInput');
+  drop.addEventListener('click',function(){fi.click();});
+  ['dragenter','dragover'].forEach(function(e){drop.addEventListener(e,function(ev){ev.preventDefault();drop.classList.add('hot');});});
+  ['dragleave','drop'].forEach(function(e){drop.addEventListener(e,function(ev){ev.preventDefault();drop.classList.remove('hot');});});
+  drop.addEventListener('drop',function(ev){addFiles(ev.dataTransfer.files);});
+  fi.addEventListener('change',function(){addFiles(fi.files);fi.value='';});
+  function addFiles(list){for(var i=0;i<list.length;i++)files.push(list[i]);renderFiles();}
+  function renderFiles(){var ul=$('fileList');ul.innerHTML='';files.forEach(function(f,idx){var li=document.createElement('li');li.innerHTML='&#128196; <span>'+escapeHtml(f.name)+'</span><span class="x" data-i="'+idx+'">&#10005;</span>';ul.appendChild(li);});Array.prototype.forEach.call(ul.querySelectorAll('.x'),function(x){x.addEventListener('click',function(){files.splice(+x.getAttribute('data-i'),1);renderFiles();});});}
 
-  /* ---------- copy Claude prompt ---------- */
-  var CLAUDE_PROMPT =
-'You are helping a commercial real estate broker log a deal. From the attached document(s) '+
-'(lease, LOI, commission agreement, exclusive, or lease abstract), extract the fields below and '+
-'return ONLY a JSON object — no commentary. Use empty string "" for anything not stated; do not guess.\\n\\n'+
-'{\\n'+
-'  "contact_name": "", "company": "", "email": "", "phone": "", "contact_type": "",\\n'+
-'  "deal_name": "", "deal_type": "", "asset_type": "", "property_address": "",\\n'+
-'  "deal_value": "", "commission_rate": "", "close_date": "", "notes": ""\\n'+
-'}\\n\\n'+
-'Notes: contact_type is one of Buyer/Seller/Tenant/Landlord/Broker. deal_type is one of '+
-'Tenant Rep/Landlord Rep/Buyer Rep/Seller Rep/Leasing Rep. deal_value is a number only (no $ or commas). '+
-'commission_rate as written (e.g. "4%" or "$2.00/SF"). close_date as YYYY-MM-DD if present.';
-  $('copyPrompt').addEventListener('click',function(){
-    navigator.clipboard && navigator.clipboard.writeText(CLAUDE_PROMPT).then(
-      function(){ toast('Prompt copied — paste it into Claude with your document'); },
-      function(){ toast('Copy failed — select the box manually'); }
-    );
-  });
+  /* ---- Claude prompt ---- */
+  var CP="You are helping a commercial real estate broker log a deal and build a commission invoice. "+
+    "From the attached document(s) extract the fields below and return ONLY a JSON object, no commentary. "+
+    "Use empty string for anything not stated; do not guess.\n\n{\n"+
+    '  "contact_name":"", "company":"", "email":"", "phone":"", "contact_type":"",\n'+
+    '  "deal_name":"", "deal_type":"", "asset_type":"",\n'+
+    '  "bill_to":"", "attention":"", "bill_to_address":"", "tenant":"", "landlord":"", "property":"",\n'+
+    '  "representation_type":"", "lead_broker":"",\n'+
+    '  "square_footage":"", "lease_start_date":"", "term_months":"", "starting_rate_psf":"", "escalation_pct":"", "fee_pct":"",\n'+
+    '  "close_date":"", "notes":""\n}\n\n'+
+    "contact_type: Buyer/Seller/Tenant/Landlord/Broker. deal_type: Tenant Rep/Landlord Rep/Buyer Rep/Seller Rep/Leasing Rep. "+
+    "representation_type: Tenant/Landlord/Buyer/Seller. Numbers with no symbols. Dates YYYY-MM-DD.";
+  $('copyPrompt').addEventListener('click',function(){navigator.clipboard&&navigator.clipboard.writeText(CP).then(function(){toast('Prompt copied &mdash; paste into Claude with your document');},function(){toast('Copy failed');});});
 
-  /* ---------- parse pasted JSON ---------- */
+  /* ---- paste parse ---- */
   $('parsePaste').addEventListener('click',function(){
     var raw=$('pasteBox').value.trim();
-    if(!raw){ toast('Paste the JSON answer from Claude first'); return; }
-    var obj=extractJson(raw);
-    if(!obj){ toast('Could not read that as JSON — check the paste'); return; }
-    var map={
-      contact_name:'c_name', company:'c_company', email:'c_email', phone:'c_phone', contact_type:'c_type',
-      deal_name:'d_name', deal_type:'d_type', asset_type:'d_asset', property_address:'d_address',
-      deal_value:'d_value', commission_rate:'d_rate', close_date:'d_close', notes:'d_notes'
-    };
-    var filled=0;
-    Object.keys(map).forEach(function(k){
-      if(obj[k]!==undefined && obj[k]!==null && String(obj[k]).length){
-        var el=$(map[k]); if(!el) return;
-        el.value=String(obj[k]); filled++;
-      }
-    });
-    recompute();
-    toast(filled+' field'+(filled===1?'':'s')+' filled — review before saving');
+    if(!raw){toast('Paste the JSON answer from Claude first');return;}
+    var o=extractJson(raw);
+    if(!o){toast('Could not read that as JSON');return;}
+    var map={contact_name:'c_name',company:'c_company',email:'c_email',phone:'c_phone',contact_type:'c_type',
+      deal_name:'d_name',deal_type:'d_type',asset_type:'d_asset',close_date:'d_close',notes:'d_notes',
+      bill_to:'i_billto',attention:'i_attn',bill_to_address:'i_billaddr',tenant:'i_tenant',landlord:'i_landlord',
+      property:'i_property',representation_type:'i_reptype',lead_broker:'i_broker',
+      square_footage:'i_sf',lease_start_date:'i_start',term_months:'i_term',starting_rate_psf:'i_rate',
+      escalation_pct:'i_esc',fee_pct:'i_fee'};
+    var n=0;
+    Object.keys(map).forEach(function(k){if(o[k]!==undefined&&o[k]!==null&&String(o[k]).length){var el=$(map[k]);if(el){el.value=String(o[k]);n++;}}});
+    toast(n+' field(s) filled &mdash; review, then Build schedule');
   });
-  function extractJson(raw){
-    try{ return JSON.parse(raw); }catch(e){}
-    var a=raw.indexOf('{'), b=raw.lastIndexOf('}');
-    if(a>=0&&b>a){ try{ return JSON.parse(raw.slice(a,b+1)); }catch(e){} }
-    return null;
-  }
+  function extractJson(raw){try{return JSON.parse(raw);}catch(e){}var a=raw.indexOf('{'),b=raw.lastIndexOf('}');if(a>=0&&b>a){try{return JSON.parse(raw.slice(a,b+1));}catch(e){}}return null;}
 
-  /* ---------- commission compute ---------- */
-  function num(v){ return parseFloat(String(v||'').replace(/[^0-9.\\-]/g,'')) || 0; }
-  function money(n){ return '$'+(Math.round(n)).toLocaleString('en-US'); }
-  function recompute(){
-    var override=$('d_commission_override').value.trim();
-    var computed;
-    if(override!==''){ computed=num(override); }
-    else{
-      var val=num($('d_value').value), rate=$('d_rate').value;
-      if(/%/.test(rate)){ computed=val*(num(rate)/100); }
-      else { computed=0; }
+  /* ---- schedule engine ---- */
+  function fmtDate(d){return (d.getMonth()+1)+'/'+d.getDate()+'/'+d.getFullYear();}
+  function parseDate(v){if(!v)return null;var p=v.split('-');if(p.length===3)return new Date(+p[0],+p[1]-1,+p[2]);var d=new Date(v);return isNaN(d)?null:d;}
+  function buildSchedule(){
+    var sf=num($('i_sf').value), start=parseDate($('i_start').value), term=Math.round(num($('i_term').value)),
+        rate0=num($('i_rate').value), esc=num($('i_esc').value)/100, fee=num($('i_fee').value)/100;
+    schedule=[];
+    if(!sf||!term||!rate0){toast('Need square footage, term, and starting rate');return;}
+    var fullYears=Math.floor(term/12), rem=term-fullYears*12, rows=fullYears+(rem>0?1:0);
+    for(var i=0;i<rows;i++){
+      var months=(i<fullYears)?12:rem;
+      var rateU=rate0*Math.pow(1+esc,i);
+      var frac=months/12;
+      var annual=r2(rateU*sf*frac);
+      var sDate=start?new Date(start.getFullYear()+i,start.getMonth(),start.getDate()):null;
+      var eDate=null;
+      if(start){eDate=new Date(start.getFullYear()+i,start.getMonth(),start.getDate());eDate.setMonth(eDate.getMonth()+months);eDate.setDate(eDate.getDate()-1);}
+      schedule.push({months:months,rateDisp:r2(rateU),freeRent:0,annual:annual,expenses:0,
+        totalLease:annual,fee:r2(annual*fee),startStr:sDate?fmtDate(sDate):'',endStr:eDate?fmtDate(eDate):''});
     }
-    $('d_commission').textContent=money(computed);
-    return computed;
+    renderSchedule();
   }
-  ['d_value','d_rate','d_commission_override'].forEach(function(id){
-    $(id).addEventListener('input',recompute);
-  });
+  function recalcRow(row){var feePct=num($('i_fee').value)/100;row.totalLease=r2(row.annual-row.expenses);row.fee=r2(row.totalLease*feePct);}
+  function totals(){var m=0,tl=0,fe=0;schedule.forEach(function(r){m+=r.months;tl+=r.totalLease;fe+=r.fee;});return {months:m,totalLease:r2(tl),fee:r2(fe)};}
+  function renderSchedule(){
+    if(!schedule.length){$('schedWrap').style.display='none';return;}
+    $('schedWrap').style.display='block';
+    var h='<tr><th>Start / End</th><th>Mo.</th><th>Rate/SF</th><th>Free</th><th>Annual Rate</th><th>Adjust.</th><th>Total Lease</th><th>Fee</th><th>Total Fee</th></tr>';
+    schedule.forEach(function(r,i){
+      h+='<tr>'+
+        '<td>'+escapeHtml(r.startStr)+'<br>'+escapeHtml(r.endStr)+'</td>'+
+        '<td>'+r.months+'</td>'+
+        '<td><input data-i="'+i+'" data-f="rateDisp" value="'+r.rateDisp.toFixed(2)+'"></td>'+
+        '<td><input data-i="'+i+'" data-f="freeRent" value="'+r.freeRent+'" style="width:52px"></td>'+
+        '<td>'+money2(r.annual)+'</td>'+
+        '<td><input data-i="'+i+'" data-f="expenses" value="'+r.expenses.toFixed(2)+'"></td>'+
+        '<td>'+money2(r.totalLease)+'</td>'+
+        '<td>'+num($('i_fee').value)+'%</td>'+
+        '<td>'+money2(r.fee)+'</td></tr>';
+    });
+    var t=totals();
+    h+='<tr class="totrow"><td>Total</td><td>'+t.months+'</td><td></td><td></td><td></td><td></td><td>'+money2(t.totalLease)+'</td><td></td><td>'+money2(t.fee)+'</td></tr>';
+    $('schedTable').innerHTML=h;
+    Array.prototype.forEach.call($('schedTable').querySelectorAll('input'),function(inp){
+      inp.addEventListener('input',function(){
+        var idx=+inp.getAttribute('data-i'),f=inp.getAttribute('data-f'),row=schedule[idx];
+        if(f==='rateDisp'){row.rateDisp=num(inp.value);var sf=num($('i_sf').value);row.annual=r2(row.rateDisp*sf*(row.months/12));}
+        else if(f==='expenses'){row.expenses=num(inp.value);}
+        else if(f==='freeRent'){row.freeRent=num(inp.value);}
+        recalcRow(row); renderSchedule(); pushTotalsToDeal();
+      });
+    });
+    pushTotalsToDeal();
+  }
+  function pushTotalsToDeal(){
+    var t=totals();
+    $('d_commission').textContent=money2(t.fee);
+    $('d_dealvalue_lbl').textContent='Deal value '+money2(t.totalLease);
+  }
+  $('buildSched').addEventListener('click',buildSchedule);
 
-  /* ---------- invoice preview (placeholder layout) ---------- */
-  $('previewInvoice').addEventListener('click',function(){
-    var w=window.open('','_blank');
-    if(!w){ toast('Allow pop-ups to preview the invoice'); return; }
-    var d=collect();
-    var comm=recompute();
-    var today=new Date().toISOString().slice(0,10);
-    w.document.write(
-      '<!doctype html><meta charset="utf-8"><title>Invoice — '+escapeHtml(d.deal.name||'Holiner')+'</title>'+
-      '<style>body{font-family:Georgia,serif;color:#22241F;max-width:720px;margin:40px auto;padding:0 30px;line-height:1.5}'+
-      'h1{font-size:30px;margin:0}.g{color:#5C8050}.muted{color:#8A8B7E}table{width:100%;border-collapse:collapse;margin:26px 0}'+
-      'td{padding:10px 0;border-bottom:1px solid #eee;font-size:14px}.tot td{border-top:2px solid #22241F;border-bottom:none;font-weight:700;font-size:18px;padding-top:14px}'+
-      '.hdr{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #5C8050;padding-bottom:16px}'+
-      '.print{margin:30px 0;padding:10px 18px;background:#78A167;color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer}'+
-      '@media print{.print{display:none}}</style>'+
-      '<div class="hdr"><div><h1>Holiner <span class="g">Commercial</span></h1><div class="muted">Real Estate Brokerage</div></div>'+
-      '<div style="text-align:right"><div style="font-size:22px;font-weight:700">INVOICE</div><div class="muted">'+today+'</div></div></div>'+
-      '<p style="margin-top:24px"><strong>Bill to:</strong><br>'+escapeHtml(d.contact.company||d.contact.name||'—')+
-      (d.contact.name&&d.contact.company?'<br>'+escapeHtml(d.contact.name):'')+'</p>'+
-      '<p><strong>Re:</strong> '+escapeHtml(d.deal.name||'—')+(d.deal.address?'<br><span class="muted">'+escapeHtml(d.deal.address)+'</span>':'')+'</p>'+
-      '<table>'+
-      '<tr><td>Representation</td><td style="text-align:right">'+escapeHtml(d.deal.type||'—')+'</td></tr>'+
-      '<tr><td>Deal value</td><td style="text-align:right">'+(d.deal.value?money(num(d.deal.value)):'—')+'</td></tr>'+
-      '<tr><td>Commission rate</td><td style="text-align:right">'+escapeHtml(d.deal.rate||'—')+'</td></tr>'+
-      '<tr class="tot"><td>Total due</td><td style="text-align:right">'+money(comm)+'</td></tr>'+
+  /* ---- invoice (Holiner Template A) ---- */
+  function logoSvg(){
+    return '<svg width="58" height="58" viewBox="0 0 100 100" fill="none" stroke="#22241F" stroke-width="4">'+
+      '<polygon points="50,6 89,28 89,72 50,94 11,72 11,28" stroke-linejoin="round"/>'+
+      '<path d="M34 34 V66 M66 34 V66 M34 50 H66" stroke-width="5" stroke-linecap="round"/></svg>';
+  }
+  function payDate(v){var d=parseDate(v);if(!d)return '';var mm=('0'+(d.getMonth()+1)).slice(-2),dd=('0'+d.getDate()).slice(-2);return mm+'/'+dd+'/'+d.getFullYear();}
+  function buildInvoiceHtml(){
+    var t=totals();
+    var mode=$('i_paymode').value, feeTotal=t.fee;
+    var half1=r2(feeTotal/2), half2=r2(feeTotal-half1);
+    var received=num($('i_received').value);
+    var invNo=$('i_number').value||'', invDate=$('i_date').value?payDate($('i_date').value):'';
+    var reptype=$('i_reptype').value, broker=$('i_broker').value;
+    var rows='';
+    schedule.forEach(function(r,i){
+      rows+='<tr'+(i%2?' style="background:#f4f6f9"':'')+'>'+
+        '<td>'+escapeHtml(r.startStr)+'<br>'+escapeHtml(r.endStr)+'</td>'+
+        '<td class="c">'+r.months+' MO</td>'+
+        '<td class="r">'+money2(r.rateDisp)+'</td>'+
+        '<td class="c">'+r.freeRent+'</td>'+
+        '<td class="r">'+money2(r.annual)+'</td>'+
+        '<td class="r">'+money2(r.expenses)+'</td>'+
+        '<td class="r">'+money2(r.totalLease)+'</td>'+
+        '<td class="c">'+num($('i_fee').value)+'%</td>'+
+        '<td class="r">'+money2(r.fee)+'</td></tr>';
+    });
+    var payLines='';
+    if(mode==='full'){
+      payLines='<div class="pr"><span>Total Commission Due:</span><b>'+money2(feeTotal)+'</b></div>'+
+        '<div class="pr"><span>1st Payment Due '+payDate($('i_due1').value)+'</span><b>'+money2(half1)+'</b></div>'+
+        '<div class="pr"><span>2nd Payment Due '+payDate($('i_due2').value)+'</span><b>'+money2(half2)+'</b></div>';
+    } else if(mode==='half1'){
+      payLines='<div class="pr"><span>1st Payment Due '+payDate($('i_due1').value)+'</span><b>'+money2(half1)+'</b></div>'+
+        '<div class="pr"><span>Total 1st Half Commission Due:</span><b>'+money2(half1)+'</b></div>';
+    } else {
+      payLines='<div class="pr"><span>2nd Payment Due '+payDate($('i_due2').value)+'</span><b>'+money2(half2)+'</b></div>'+
+        '<div class="pr"><span>Total 2nd Half Commission Due:</span><b>'+money2(half2)+'</b></div>';
+    }
+    return '<!doctype html><html><head><meta charset="utf-8"><title>Invoice '+escapeHtml(invNo)+'</title><style>'+
+      'body{font-family:Arial,Helvetica,sans-serif;color:#1a1a1a;max-width:820px;margin:24px auto;padding:0 30px;font-size:12px}'+
+      '.top{display:flex;justify-content:space-between;align-items:flex-start}'+
+      '.addr{text-align:center;font-size:11px;line-height:1.4;padding-top:6px}'+
+      '.inv{font-size:22px;font-weight:800;letter-spacing:1px}'+
+      '.meta{display:flex;justify-content:space-between;margin-top:26px;gap:30px}'+
+      '.meta .col{font-size:11px;line-height:1.7}.meta b{display:inline-block;min-width:120px}'+
+      '.lab{color:#555}'+
+      'table.sch{width:100%;border-collapse:collapse;margin-top:22px;font-size:10.5px}'+
+      'table.sch th{background:#4a5568;color:#fff;padding:6px 6px;text-align:right;font-size:9.5px}'+
+      'table.sch th:first-child{text-align:left}'+
+      'table.sch td{padding:6px 6px;border-bottom:1px solid #eee}'+
+      'table.sch td.r{text-align:right}table.sch td.c{text-align:center}'+
+      'table.sch tr.tot td{font-weight:800;border-top:2px solid #222;border-bottom:none}'+
+      '.wire{border:1px solid #333;padding:8px 10px;margin-top:22px;font-size:10px}'+
+      '.bottom{display:flex;gap:16px;margin-top:14px}'+
+      '.remit{flex:1;background:#e8eef5;padding:12px 14px;font-size:10.5px;line-height:1.5}'+
+      '.pay{flex:1;background:#f2f2f2;padding:12px 14px;font-size:11px}'+
+      '.pr{display:flex;justify-content:space-between;padding:3px 0}'+
+      '.print{margin:24px 0;padding:10px 18px;background:#5C8050;color:#fff;border:none;border-radius:6px;font-size:13px;cursor:pointer}'+
+      '@media print{.print{display:none}}'+
+      '</style></head><body>'+
+      '<div class="top">'+logoSvg()+
+        '<div class="addr">'+escapeHtml(HOLINER.addr1)+'<br>'+escapeHtml(HOLINER.addr2)+'<br>Tel '+escapeHtml(HOLINER.tel)+'</div>'+
+        '<div class="inv">INVOICE</div></div>'+
+      '<div class="meta"><div class="col">'+
+        '<div><b class="lab">To:</b>'+escapeHtml($('i_billto').value)+'</div>'+
+        ($('i_billaddr').value?'<div><b class="lab"></b>'+escapeHtml($('i_billaddr').value)+'</div>':'')+
+        ($('i_attn').value?'<div><b class="lab">Attention:</b>'+escapeHtml($('i_attn').value)+'</div>':'')+
+        '<div style="margin-top:8px"><b class="lab">Tenant:</b>'+escapeHtml($('i_tenant').value)+'</div>'+
+        '<div><b class="lab">Property:</b>'+escapeHtml($('i_property').value)+'</div>'+
+        '<div><b class="lab">Landlord:</b>'+escapeHtml($('i_landlord').value)+'</div>'+
+      '</div><div class="col">'+
+        '<div><b class="lab">Date:</b>'+escapeHtml(invDate)+'</div>'+
+        '<div><b class="lab">Invoice #:</b>'+escapeHtml(invNo)+'</div>'+
+        '<div><b class="lab">Representation Type:</b>'+escapeHtml(reptype)+'</div>'+
+        '<div><b class="lab">Lead Broker:</b>'+escapeHtml(broker)+'</div>'+
+        '<div style="margin-top:8px"><b class="lab">Square Footage:</b>'+escapeHtml(Number(num($('i_sf').value)).toLocaleString())+'</div>'+
+        '<div><b class="lab">Term:</b>'+escapeHtml(totals().months+' Months')+'</div>'+
+      '</div></div>'+
+      '<table class="sch"><tr><th>Start / End Date</th><th>Months</th><th>Rate per SF</th><th>Free Rent</th><th>Annual Rate</th><th>Expenses / Adjustments</th><th>Total Lease</th><th>Fee</th><th>Total Fee</th></tr>'+
+        rows+
+        '<tr class="tot"><td>Total:</td><td class="c">'+t.months+' MO</td><td></td><td class="c">0</td><td></td><td class="r">'+money2(0)+'</td><td class="r">'+money2(t.totalLease)+'</td><td></td><td class="r">'+money2(t.fee)+'</td></tr>'+
       '</table>'+
-      '<p class="muted" style="font-size:13px">Payment due within 30 days of the date above. Thank you for your business.</p>'+
-      '<p class="muted" style="font-size:11px;margin-top:30px">Placeholder invoice layout — will be restyled to match your Holiner template.</p>'+
-      '<button class="print" onclick="window.print()">Print / Save as PDF</button>'
-    );
-    w.document.close();
+      '<div class="wire"><b>Wire Instructions or ACH to:</b> '+escapeHtml(HOLINER.bank)+' <b>ABA #:</b> '+escapeHtml(HOLINER.aba)+' <b>Account #:</b> '+escapeHtml(HOLINER.acct)+' Name on Account: '+escapeHtml(HOLINER.entity)+'</div>'+
+      '<div class="bottom"><div class="remit"><b>Remit To:</b><br>'+escapeHtml(HOLINER.entity)+'<br>'+escapeHtml(HOLINER.addr1)+'<br>'+escapeHtml(HOLINER.addr2)+'<br>Accounts Receivable<br>'+escapeHtml(HOLINER.tel)+', '+escapeHtml(HOLINER.email)+'<br><br>Federal ID #: '+escapeHtml(HOLINER.fedid)+'</div>'+
+      '<div class="pay"><b>Payments:</b><div class="pr"><span>Amount Received:</span><b>'+money2(received)+'</b></div>'+payLines+'</div></div>'+
+      '<button class="print" onclick="window.print()">Print / Save as PDF</button>'+
+      '</body></html>';
+  }
+  $('previewInvoice').addEventListener('click',function(){
+    if(!schedule.length){toast('Build the schedule first');return;}
+    var w=window.open('','_blank');if(!w){toast('Allow pop-ups to preview');return;}
+    w.document.write(buildInvoiceHtml());w.document.close();
   });
 
-  /* ---------- collect + save ---------- */
+  /* ---- save to CRM ---- */
   function collect(){
+    var t=totals();
     return {
-      contact:{
-        name:$('c_name').value.trim(), company:$('c_company').value.trim(),
-        email:$('c_email').value.trim(), phone:$('c_phone').value.trim(), type:$('c_type').value
-      },
-      deal:{
-        name:$('d_name').value.trim(), type:$('d_type').value, stage:$('d_stage').value,
-        asset:$('d_asset').value, broker:$('d_broker').value, address:$('d_address').value.trim(),
-        value:$('d_value').value.trim(), rate:$('d_rate').value.trim(),
-        commission:recompute(), close:$('d_close').value, invoice:$('d_invoice').value,
-        notes:$('d_notes').value.trim(),
-        files: files.map(function(f){return f.name;})
-      }
+      contact:{name:$('c_name').value.trim(),company:$('c_company').value.trim(),email:$('c_email').value.trim(),phone:$('c_phone').value.trim(),type:$('c_type').value},
+      deal:{name:$('d_name').value.trim(),type:$('d_type').value,stage:$('d_stage').value,asset:$('d_asset').value,
+        broker:$('d_broker').value,address:$('i_property').value.trim(),value:t.totalLease,rate:num($('i_fee').value)+'%',
+        commission:t.fee,close:$('d_close').value,invoice:$('d_invoice').value,notes:$('d_notes').value.trim(),
+        files:files.map(function(f){return f.name;})}
     };
   }
   $('saveCrm').addEventListener('click',function(){
     var d=collect();
-    if(!d.deal.name){ toast('Give the deal a name first'); return; }
-    var res=$('result'), inner=$('resultInner');
-    res.className='result show'; inner.innerHTML='Saving to CRM…';
-    var btn=this; btn.disabled=true;
-    fetch('/api/logDeal',{
-      method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(d)
-    }).then(function(r){ return r.json().then(function(j){ return {ok:r.ok,j:j}; }); })
-      .then(function(o){
-        btn.disabled=false;
-        if(o.ok && o.j && o.j.dealUrl){
-          res.className='result show ok';
-          inner.innerHTML='✅ Saved to '+(o.j.target||'CRM')+'. '+
-            '<a href="'+o.j.dealUrl+'" target="_blank">Open the deal in Notion →</a>'+
-            (o.j.contactUrl?'  ·  <a href="'+o.j.contactUrl+'" target="_blank">contact</a>':'');
-        } else {
-          res.className='result show err';
-          inner.innerHTML='⚠️ '+((o.j&&o.j.error)||'Save failed.')+
-            '<br><span class="muted">The backend runs on the deployed preview/live site with the Notion key set. Opening this file locally cannot reach it yet.</span>';
-        }
-      }).catch(function(err){
-        btn.disabled=false; res.className='result show err';
-        inner.innerHTML='⚠️ Could not reach the backend. This works on the deployed preview/live site (Cloudflare), not when the file is opened directly.';
-      });
+    if(!d.deal.name){toast('Give the deal a name first');return;}
+    var res=$('result'),inner=$('resultInner');res.className='result show';inner.innerHTML='Saving to CRM&hellip;';
+    var btn=this;btn.disabled=true;
+    fetch('/api/logDeal',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)})
+      .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});})
+      .then(function(o){btn.disabled=false;
+        if(o.ok&&o.j&&o.j.dealUrl){res.className='result show ok';
+          inner.innerHTML='&#9989; Saved to '+(o.j.target||'CRM')+'. <a href="'+o.j.dealUrl+'" target="_blank">Open the deal in Notion &rarr;</a>'+(o.j.contactUrl?'  &middot;  <a href="'+o.j.contactUrl+'" target="_blank">contact</a>':'');
+        } else {res.className='result show err';inner.innerHTML='&#9888; '+((o.j&&o.j.error)||'Save failed.')+'<br><span class="muted">The backend runs on the deployed preview/live site with the Notion key set. Opening this file locally cannot reach it yet.</span>';}
+      }).catch(function(){btn.disabled=false;res.className='result show err';inner.innerHTML='&#9888; Could not reach the backend. This works on the deployed preview/live site (Cloudflare), not when the file is opened directly.';});
   });
 
   $('clearAll').addEventListener('click',function(){
-    ['c_name','c_company','c_email','c_phone','d_name','d_address','d_value','d_rate','d_commission_override','d_close','d_notes'].forEach(function(id){$(id).value='';});
-    ['c_type','d_type','d_asset','d_broker'].forEach(function(id){$(id).value='';});
-    $('d_stage').value='Executed'; $('d_invoice').value='Draft';
-    files=[]; renderFiles(); recompute(); $('result').className='result';
-    $('pasteBox').value='';
-    toast('Cleared');
+    Array.prototype.forEach.call(document.querySelectorAll('input,textarea'),function(el){if(el.type!=='file')el.value='';});
+    $('c_type').value='';$('d_type').value='';$('d_asset').value='';$('d_broker').value='';
+    $('d_stage').value='Executed';$('d_invoice').value='Draft';$('i_reptype').value='Tenant';$('i_paymode').value='full';
+    $('i_esc').value='3';$('i_fee').value='4';$('i_received').value='0';
+    files=[];schedule=[];renderFiles();$('schedWrap').style.display='none';
+    $('d_commission').textContent='$0.00';$('d_dealvalue_lbl').textContent='Deal value &mdash;';
+    $('result').className='result';toast('Cleared');
   });
 
-  function escapeHtml(s){ return String(s||'').replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
-
-  recompute();
+  // default invoice date = today
+  (function(){var d=new Date();$('i_date').value=d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);})();
 })();
 </script>
 </body>
