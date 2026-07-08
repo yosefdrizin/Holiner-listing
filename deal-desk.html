@@ -214,6 +214,8 @@
           <label><span class="lab">Starting rate / SF ($)</span><input id="i_rate" inputmode="decimal" placeholder="48.00"></label>
           <label><span class="lab">Escalation (%/yr)</span><input id="i_esc" inputmode="decimal" value="3"></label>
           <label><span class="lab">Fee (%)</span><input id="i_fee" inputmode="decimal" value="4"></label>
+          <label><span class="lab">Commission basis</span><select id="i_basis"><option value="net">Net (base rent only)</option><option value="gross">Gross (rent + expenses)</option></select></label>
+          <label><span class="lab">Op. expenses ($/yr, gross only)</span><input id="i_opex" inputmode="decimal" value="0"></label>
         </div>
         <button class="btn wide" id="buildSched" style="margin-top:14px">Build / refresh schedule</button>
         <div class="sched-wrap" id="schedWrap" style="display:none"><table class="sched" id="schedTable"></table></div>
@@ -316,7 +318,8 @@
   function parseDate(v){if(!v)return null;var p=v.split('-');if(p.length===3)return new Date(+p[0],+p[1]-1,+p[2]);var d=new Date(v);return isNaN(d)?null:d;}
   function buildSchedule(){
     var sf=num($('i_sf').value), start=parseDate($('i_start').value), term=Math.round(num($('i_term').value)),
-        rate0=num($('i_rate').value), esc=num($('i_esc').value)/100, fee=num($('i_fee').value)/100;
+        rate0=num($('i_rate').value), esc=num($('i_esc').value)/100, fee=num($('i_fee').value)/100,
+        basis=$('i_basis').value, opex=num($('i_opex').value);
     schedule=[];
     if(!sf||!term||!rate0){toast('Need square footage, term, and starting rate');return;}
     var fullYears=Math.floor(term/12), rem=term-fullYears*12, rows=fullYears+(rem>0?1:0);
@@ -325,16 +328,18 @@
       var rateU=rate0*Math.pow(1+esc,i);
       var frac=months/12;
       var annual=r2(rateU*sf*frac);
+      var expenses=(basis==='gross')?r2(opex*frac):0;
+      var totalLease=r2(annual+expenses);
       var sDate=start?new Date(start.getFullYear()+i,start.getMonth(),start.getDate()):null;
       var eDate=null;
       if(start){eDate=new Date(start.getFullYear()+i,start.getMonth(),start.getDate());eDate.setMonth(eDate.getMonth()+months);eDate.setDate(eDate.getDate()-1);}
-      schedule.push({months:months,rateDisp:r2(rateU),freeRent:0,annual:annual,expenses:0,
-        totalLease:annual,fee:r2(annual*fee),startStr:sDate?fmtDate(sDate):'',endStr:eDate?fmtDate(eDate):''});
+      schedule.push({months:months,rateDisp:r2(rateU),freeRent:0,annual:annual,expenses:expenses,
+        totalLease:totalLease,fee:r2(totalLease*fee),startStr:sDate?fmtDate(sDate):'',endStr:eDate?fmtDate(eDate):''});
     }
     renderSchedule();
   }
-  function recalcRow(row){var feePct=num($('i_fee').value)/100;row.totalLease=r2(row.annual-row.expenses);row.fee=r2(row.totalLease*feePct);}
-  function totals(){var m=0,tl=0,fe=0;schedule.forEach(function(r){m+=r.months;tl+=r.totalLease;fe+=r.fee;});return {months:m,totalLease:r2(tl),fee:r2(fe)};}
+  function recalcRow(row){var feePct=num($('i_fee').value)/100;row.totalLease=r2(row.annual+row.expenses);row.fee=r2(row.totalLease*feePct);}
+  function totals(){var m=0,tl=0,fe=0,ex=0;schedule.forEach(function(r){m+=r.months;tl+=r.totalLease;fe+=r.fee;ex+=r.expenses;});return {months:m,totalLease:r2(tl),fee:r2(fe),exp:r2(ex)};}
   function renderSchedule(){
     if(!schedule.length){$('schedWrap').style.display='none';return;}
     $('schedWrap').style.display='block';
@@ -371,6 +376,7 @@
     $('d_dealvalue_lbl').textContent='Deal value '+money2(t.totalLease);
   }
   $('buildSched').addEventListener('click',buildSchedule);
+  ['i_basis','i_opex','i_fee'].forEach(function(id){$(id).addEventListener('change',function(){if(schedule.length)buildSchedule();});});
 
   /* ---- invoice (Holiner Template A) ---- */
   function logoSvg(){
@@ -453,7 +459,7 @@
       '</div></div>'+
       '<table class="sch"><tr><th>Start / End Date</th><th>Months</th><th>Rate per SF</th><th>Free Rent</th><th>Annual Rate</th><th>Expenses / Adjustments</th><th>Total Lease</th><th>Fee</th><th>Total Fee</th></tr>'+
         rows+
-        '<tr class="tot"><td>Total:</td><td class="c">'+t.months+' MO</td><td></td><td class="c">0</td><td></td><td class="r">'+money2(0)+'</td><td class="r">'+money2(t.totalLease)+'</td><td></td><td class="r">'+money2(t.fee)+'</td></tr>'+
+        '<tr class="tot"><td>Total:</td><td class="c">'+t.months+' MO</td><td></td><td class="c">0</td><td></td><td class="r">'+money2(t.exp)+'</td><td class="r">'+money2(t.totalLease)+'</td><td></td><td class="r">'+money2(t.fee)+'</td></tr>'+
       '</table>'+
       '<div class="wire"><b>Wire Instructions or ACH to:</b> '+escapeHtml(HOLINER.bank)+' <b>ABA #:</b> '+escapeHtml(HOLINER.aba)+' <b>Account #:</b> '+escapeHtml(HOLINER.acct)+' Name on Account: '+escapeHtml(HOLINER.entity)+'</div>'+
       '<div class="bottom"><div class="remit"><b>Remit To:</b><br>'+escapeHtml(HOLINER.entity)+'<br>'+escapeHtml(HOLINER.addr1)+'<br>'+escapeHtml(HOLINER.addr2)+'<br>Accounts Receivable<br>'+escapeHtml(HOLINER.tel)+', '+escapeHtml(HOLINER.email)+'<br><br>Federal ID #: '+escapeHtml(HOLINER.fedid)+'</div>'+
@@ -496,7 +502,7 @@
     Array.prototype.forEach.call(document.querySelectorAll('input,textarea'),function(el){if(el.type!=='file')el.value='';});
     $('c_type').value='';$('d_type').value='';$('d_asset').value='';$('d_broker').value='';
     $('d_stage').value='Executed';$('d_invoice').value='Draft';$('i_reptype').value='Tenant';$('i_paymode').value='full';
-    $('i_esc').value='3';$('i_fee').value='4';$('i_received').value='0';
+    $('i_esc').value='3';$('i_fee').value='4';$('i_received').value='0';$('i_basis').value='net';$('i_opex').value='0';
     files=[];schedule=[];renderFiles();$('schedWrap').style.display='none';
     $('d_commission').textContent='$0.00';$('d_dealvalue_lbl').textContent='Deal value &mdash;';
     $('result').className='result';toast('Cleared');
