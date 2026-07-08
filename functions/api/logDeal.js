@@ -1,10 +1,10 @@
-// Cloudflare Pages Function — POST /api/logDeal
+// Cloudflare Pages Function - POST /api/logDeal
 // Creates a Contact (if named) + a Deal in Notion and links them.
 // Secrets/vars (set in Cloudflare dashboard → Settings → Environment variables):
-//   NOTION_TOKEN       (required)  — the Notion internal integration secret
-//   NOTION_DEALS_DB    (optional)  — Deals database id; defaults to the SANDBOX Deals DB
-//   NOTION_CONTACTS_DB (optional)  — Contacts database id; defaults to the SANDBOX Contacts DB
-//   TARGET_LABEL       (optional)  — label shown back to the UI (e.g. "Sandbox" / "CRM")
+//   NOTION_TOKEN       (required)  - the Notion internal integration secret
+//   NOTION_DEALS_DB    (optional)  - Deals database id; defaults to the SANDBOX Deals DB
+//   NOTION_CONTACTS_DB (optional)  - Contacts database id; defaults to the SANDBOX Contacts DB
+//   TARGET_LABEL       (optional)  - label shown back to the UI (e.g. "Sandbox" / "CRM")
 // At cutover, point NOTION_DEALS_DB / NOTION_CONTACTS_DB at the live databases and set TARGET_LABEL=CRM.
 
 const NOTION_VERSION = '2022-06-28';

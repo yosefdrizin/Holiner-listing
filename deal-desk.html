@@ -113,7 +113,7 @@
     </div>
   </header>
 
-  <p class="lede">Capture a signed deal, generate the Holiner commission invoice, and log it to the CRM &mdash; commission math and the contact/deal link are handled for you.</p>
+  <p class="lede">Capture a signed deal, generate the Holiner commission invoice, and log it to the CRM - commission math and the contact/deal link are handled for you.</p>
 
   <div class="grid">
     <!-- LEFT column -->
@@ -131,12 +131,12 @@
       </div>
 
       <div class="card">
-        <div class="eyebrow">Fill details with your own Claude &mdash; free</div>
+        <div class="eyebrow">Fill details with your own Claude - free</div>
         <p class="hint">Copy the prompt, paste it into claude.ai with the document, then paste Claude&rsquo;s answer back here.</p>
         <button class="btn wide" id="copyPrompt">Copy prompt for Claude</button>
         <textarea id="pasteBox" style="margin-top:10px" placeholder="Paste Claude JSON answer here, then click below."></textarea>
         <button class="btn wide" id="parsePaste" style="margin-top:10px">Fill fields from paste</button>
-        <div class="coming"><span class="dot"></span> Auto-extract (AI, hands-free) &mdash; unlocks when the Claude API is approved</div>
+        <div class="coming"><span class="dot"></span> Auto-extract (AI, hands-free) - unlocks when the Claude API is approved</div>
         <button class="btn wide" disabled style="margin-top:8px">&#9889; Auto-extract with AI (coming soon)</button>
       </div>
     </div>
@@ -152,30 +152,30 @@
           <label><span class="lab">Email</span><input id="c_email" type="email" placeholder="jane@acme.com"></label>
           <label><span class="lab">Phone</span><input id="c_phone" placeholder="(214) 555-0100"></label>
           <label class="full"><span class="lab">Contact type</span>
-            <select id="c_type"><option value="">&mdash;</option><option>Buyer</option><option>Seller</option><option>Tenant</option><option>Landlord</option><option>Broker</option><option>Buyer &amp; Seller</option></select>
+            <select id="c_type"><option value="">-</option><option>Buyer</option><option>Seller</option><option>Tenant</option><option>Landlord</option><option>Broker</option><option>Buyer &amp; Seller</option></select>
           </label>
         </div>
         <div class="divider"></div>
         <div class="section-title">Deal</div>
         <div class="fields">
-          <label class="full"><span class="lab">Deal name</span><input id="d_name" placeholder="Acme &mdash; Preston Center Office Lease"></label>
+          <label class="full"><span class="lab">Deal name</span><input id="d_name" placeholder="Acme - Preston Center Office Lease"></label>
           <label><span class="lab">Deal type</span>
-            <select id="d_type"><option value="">&mdash;</option><option>Tenant Rep</option><option>Landlord Rep</option><option>Buyer Rep</option><option>Seller Rep</option><option>Leasing Rep</option></select>
+            <select id="d_type"><option value="">-</option><option>Tenant Rep</option><option>Landlord Rep</option><option>Buyer Rep</option><option>Seller Rep</option><option>Leasing Rep</option></select>
           </label>
           <label><span class="lab">Stage</span>
             <select id="d_stage"><option>Executed</option><option>Lead</option><option>Conversation</option><option>Touring</option><option>LOI</option><option>Negotiations</option><option>Lease</option><option>Dead</option></select>
           </label>
           <label><span class="lab">Asset type</span>
-            <select id="d_asset"><option value="">&mdash;</option><option>Office</option><option>Retail</option><option>Industrial</option><option>Land</option><option>Shopping Center</option><option>Health Care</option><option>F&amp;B</option><option>Manufacturing</option></select>
+            <select id="d_asset"><option value="">-</option><option>Office</option><option>Retail</option><option>Industrial</option><option>Land</option><option>Shopping Center</option><option>Health Care</option><option>F&amp;B</option><option>Manufacturing</option></select>
           </label>
           <label><span class="lab">Broker (CRM)</span>
-            <select id="d_broker"><option value="">&mdash;</option><option>David Holiner</option><option>Yosef Drizin</option><option>Michele Kornbluth</option></select>
+            <select id="d_broker"><option value="">-</option><option>David Holiner</option><option>Yosef Drizin</option><option>Michele Kornbluth</option></select>
           </label>
           <div class="commission-box">
             <div>
               <div class="cap">Total commission</div>
               <div class="amt" id="d_commission">$0.00</div>
-              <div class="sub2" id="d_dealvalue_lbl">Deal value &mdash;</div>
+              <div class="sub2" id="d_dealvalue_lbl">Deal value -</div>
             </div>
             <label style="flex:1;min-width:150px"><span class="lab">Invoice status</span>
               <select id="d_invoice"><option>Draft</option><option>Not Invoiced</option><option>Sent</option><option>Paid</option></select>
@@ -243,7 +243,7 @@
   </div>
 
   <div class="foot">
-    <strong>Draft / Sandbox.</strong> Saving writes to the throwaway <em>Deal Desk &mdash; SANDBOX</em> databases so your real CRM stays clean while we build. The invoice reproduces the Holiner detailed-schedule format (Annual Rate = un-rounded escalated rate &times; SF; fee applied per year; total split into halves). Free rent / expense reductions go in the Adjustments column. Logo is a placeholder until the real Holiner mark is dropped in. Auto-extract turns on once the Claude API is approved.
+    <strong>Draft / Sandbox.</strong> Saving writes to the throwaway <em>Deal Desk - SANDBOX</em> databases so your real CRM stays clean while we build. The invoice reproduces the Holiner detailed-schedule format (Annual Rate = un-rounded escalated rate &times; SF; fee applied per year; total split into halves). Free rent / expense reductions go in the Adjustments column. Logo is a placeholder until the real Holiner mark is dropped in. Auto-extract turns on once the Claude API is approved.
   </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -293,7 +293,7 @@
     '  "close_date":"", "notes":""\n}\n\n'+
     "contact_type: Buyer/Seller/Tenant/Landlord/Broker. deal_type: Tenant Rep/Landlord Rep/Buyer Rep/Seller Rep/Leasing Rep. "+
     "representation_type: Tenant/Landlord/Buyer/Seller. Numbers with no symbols. Dates YYYY-MM-DD.";
-  $('copyPrompt').addEventListener('click',function(){navigator.clipboard&&navigator.clipboard.writeText(CP).then(function(){toast('Prompt copied &mdash; paste into Claude with your document');},function(){toast('Copy failed');});});
+  $('copyPrompt').addEventListener('click',function(){navigator.clipboard&&navigator.clipboard.writeText(CP).then(function(){toast('Prompt copied - paste into Claude with your document');},function(){toast('Copy failed');});});
 
   /* ---- paste parse ---- */
   $('parsePaste').addEventListener('click',function(){
@@ -309,7 +309,7 @@
       escalation_pct:'i_esc',fee_pct:'i_fee'};
     var n=0;
     Object.keys(map).forEach(function(k){if(o[k]!==undefined&&o[k]!==null&&String(o[k]).length){var el=$(map[k]);if(el){el.value=String(o[k]);n++;}}});
-    toast(n+' field(s) filled &mdash; review, then Build schedule');
+    toast(n+' field(s) filled - review, then Build schedule');
   });
   function extractJson(raw){try{return JSON.parse(raw);}catch(e){}var a=raw.indexOf('{'),b=raw.lastIndexOf('}');if(a>=0&&b>a){try{return JSON.parse(raw.slice(a,b+1));}catch(e){}}return null;}
 
@@ -504,7 +504,7 @@
     $('d_stage').value='Executed';$('d_invoice').value='Draft';$('i_reptype').value='Tenant';$('i_paymode').value='full';
     $('i_esc').value='3';$('i_fee').value='4';$('i_received').value='0';$('i_basis').value='net';$('i_opex').value='0';
     files=[];schedule=[];renderFiles();$('schedWrap').style.display='none';
-    $('d_commission').textContent='$0.00';$('d_dealvalue_lbl').textContent='Deal value &mdash;';
+    $('d_commission').textContent='$0.00';$('d_dealvalue_lbl').textContent='Deal value -';
     $('result').className='result';toast('Cleared');
   });
 

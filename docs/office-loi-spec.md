@@ -1,4 +1,4 @@
-# Build Spec — Landlord Rep ▸ Letter of Intent ▸ Office LOI Builder
+# Build Spec - Landlord Rep ▸ Letter of Intent ▸ Office LOI Builder
 
 This is a build sheet for Claude Code. Build it INTO the existing `index.html` app, matching the
 existing Exclusive Agreement tool's structure, branding, navigation pattern, and Word-download
@@ -41,7 +41,7 @@ Every sub-page has a "← Back" link to the level above. Match the existing back
 
 ---
 
-## 2. Office LOI Builder — form fields
+## 2. Office LOI Builder - form fields
 
 Same UI pattern as the Exclusive Agreement tool: form on one side, live preview, Download button.
 Group the fields with these section headers. Every clause's standard language (Section 3) is the
@@ -57,7 +57,7 @@ DEFAULT, pre-filled and editable. Required fields marked *.
 - Tenant Legal Name*, Tenant DBA
 - Include Property Management? (toggle) + note
 - RSF*, Suite*, Floor/Building, Exhibit ref (default "Exhibit A")
-- Building Description (free text, 1–3 sentences; this is the sales pitch)
+- Building Description (free text, 1-3 sentences; this is the sales pitch)
 
 **Term & Dates**
 - Term (years)* (default 3)
@@ -71,7 +71,7 @@ DEFAULT, pre-filled and editable. Required fields marked *.
 - Rent Abatement months (default 0; if >0 show abatement clause, base-rent-only)
 - Operating Expense (NNN/CAM/Tax/Ins) estimate $/RSF/yr* + year
 - Electricity estimate $/RSF/yr (optional)
-- HVAC: landlord-maintained (default), building hours (default "Mon–Fri 8AM–6PM")
+- HVAC: landlord-maintained (default), building hours (default "Mon-Fri 8AM-6PM")
 
 **Construction / Delivery**
 - TI structure (default: As-is, tenant-funded). Option: Allowance $/RSF (if chosen, show TI clause +
@@ -139,7 +139,7 @@ when their toggle/condition is met.
 - **Agency Disclosure (TX default):** `Enclosed is an agency disclosure form promulgated by the Texas Real Estate Commission explaining that Holiner Holdings, LLC, represents the Landlord in this transaction.`
 - **Offer Expiration:** `This offer is valid through end of day {{expiration}}.`
 - **Disclaimer (Extended):** `This Letter of Intent is not intended to be a legally binding agreement. Nothing herein shall be used or relied upon by either party in any evidentiary manner to demonstrate that the parties have entered into a binding agreement or for any other purpose. No binding agreement shall exist unless and until a formal lease has been negotiated, drafted, approved by the parties and their counsel, and executed and delivered. While the parties may continue negotiations, each party reserves the right to terminate such negotiations at any time, with or without cause, without liability.`
-- **Signature block:** `Sincerely,` / Holiner / {{team members}} — then `Agreed and accepted on behalf of Tenant:` By / Name / Title / Date.
+- **Signature block:** `Sincerely,` / Holiner / {{team members}} - then `Agreed and accepted on behalf of Tenant:` By / Name / Title / Date.
 
 ---
 

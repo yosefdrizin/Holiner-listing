@@ -1,13 +1,13 @@
-// Cloudflare Pages Function — POST /api/extract
+// Cloudflare Pages Function - POST /api/extract
 // Hands-free AI extraction from uploaded documents. INERT until ANTHROPIC_API_KEY is set,
 // so there is zero Claude spend until it's explicitly approved and the key is added.
 // Body: { documents: [ { media_type: "application/pdf"|"image/*", data: "<base64>" } ] }
-// Returns: { ok: true, fields: {...} }  — the same field names the Deal Desk form uses.
+// Returns: { ok: true, fields: {...} }  - the same field names the Deal Desk form uses.
 
 const EXTRACT_PROMPT =
   'You are helping a commercial real estate broker log a deal. From the attached document(s) ' +
   '(lease, LOI, commission agreement, exclusive, or lease abstract), extract the fields below and ' +
-  'return ONLY a JSON object — no commentary. Use empty string "" for anything not stated; do not guess.\n\n' +
+  'return ONLY a JSON object - no commentary. Use empty string "" for anything not stated; do not guess.\n\n' +
   '{\n' +
   '  "contact_name": "", "company": "", "email": "", "phone": "", "contact_type": "",\n' +
   '  "deal_name": "", "deal_type": "", "asset_type": "", "property_address": "",\n' +
