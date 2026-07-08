@@ -243,7 +243,7 @@
   </div>
 
   <div class="foot">
-    <strong>Draft / Sandbox.</strong> Saving writes to the throwaway <em>Deal Desk - SANDBOX</em> databases so your real CRM stays clean while we build. The invoice reproduces the Holiner detailed-schedule format (Annual Rate = un-rounded escalated rate &times; SF; fee applied per year; total split into halves). Free rent / expense reductions go in the Adjustments column. Logo is a placeholder until the real Holiner mark is dropped in. Auto-extract turns on once the Claude API is approved.
+    <strong>Draft / Sandbox.</strong> Saving writes to the throwaway <em>Deal Desk - SANDBOX</em> databases so your real CRM stays clean while we build. The invoice reproduces the Holiner detailed-schedule format (Annual Rate = un-rounded escalated rate &times; SF; fee applied per year; total split into halves). Enter free months in the Free column and the annual rent, totals, and commission auto-adjust (that period's rent counts only the paying months). Other one-off reductions go in the Adjust. column. Logo is a placeholder until the real Holiner mark is dropped in. Auto-extract turns on once the Claude API is approved.
   </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -327,18 +327,19 @@
       var months=(i<fullYears)?12:rem;
       var rateU=rate0*Math.pow(1+esc,i);
       var frac=months/12;
-      var annual=r2(rateU*sf*frac);
+      var freeRent=0;
+      var annual=r2(rateU*sf*(months-freeRent)/12);
       var expenses=(basis==='gross')?r2(opex*frac):0;
       var totalLease=r2(annual+expenses);
       var sDate=start?new Date(start.getFullYear()+i,start.getMonth(),start.getDate()):null;
       var eDate=null;
       if(start){eDate=new Date(start.getFullYear()+i,start.getMonth(),start.getDate());eDate.setMonth(eDate.getMonth()+months);eDate.setDate(eDate.getDate()-1);}
-      schedule.push({months:months,rateDisp:r2(rateU),freeRent:0,annual:annual,expenses:expenses,
+      schedule.push({months:months,rateU:rateU,rateDisp:r2(rateU),freeRent:freeRent,annual:annual,expenses:expenses,
         totalLease:totalLease,fee:r2(totalLease*fee),startStr:sDate?fmtDate(sDate):'',endStr:eDate?fmtDate(eDate):''});
     }
     renderSchedule();
   }
-  function recalcRow(row){var feePct=num($('i_fee').value)/100;row.totalLease=r2(row.annual+row.expenses);row.fee=r2(row.totalLease*feePct);}
+  function recalcRow(row){var sf=num($('i_sf').value),feePct=num($('i_fee').value)/100;var rm=Math.max(0,row.months-row.freeRent);row.annual=r2((row.rateU||row.rateDisp)*sf*rm/12);row.totalLease=r2(row.annual+row.expenses);row.fee=r2(row.totalLease*feePct);}
   function totals(){var m=0,tl=0,fe=0,ex=0;schedule.forEach(function(r){m+=r.months;tl+=r.totalLease;fe+=r.fee;ex+=r.expenses;});return {months:m,totalLease:r2(tl),fee:r2(fe),exp:r2(ex)};}
   function renderSchedule(){
     if(!schedule.length){$('schedWrap').style.display='none';return;}
@@ -360,9 +361,9 @@
     h+='<tr class="totrow"><td>Total</td><td>'+t.months+'</td><td></td><td></td><td></td><td></td><td>'+money2(t.totalLease)+'</td><td></td><td>'+money2(t.fee)+'</td></tr>';
     $('schedTable').innerHTML=h;
     Array.prototype.forEach.call($('schedTable').querySelectorAll('input'),function(inp){
-      inp.addEventListener('input',function(){
+      inp.addEventListener('change',function(){
         var idx=+inp.getAttribute('data-i'),f=inp.getAttribute('data-f'),row=schedule[idx];
-        if(f==='rateDisp'){row.rateDisp=num(inp.value);var sf=num($('i_sf').value);row.annual=r2(row.rateDisp*sf*(row.months/12));}
+        if(f==='rateDisp'){row.rateDisp=num(inp.value);row.rateU=num(inp.value);}
         else if(f==='expenses'){row.expenses=num(inp.value);}
         else if(f==='freeRent'){row.freeRent=num(inp.value);}
         recalcRow(row); renderSchedule(); pushTotalsToDeal();
