@@ -135,10 +135,10 @@
     <h2>Holiner Deal Desk</h2>
     <p class="auth-sub">Sign in to reach your deals and contacts.</p>
     <button class="btn primary wide" id="btnMs">Sign in with Microsoft</button>
-    <p class="auth-hint">Microsoft turns on once your admin finishes the one-time setup. Until then, use the email code below.</p>
+    <p class="auth-hint">Microsoft turns on once your admin finishes the one-time setup. Until then, use an email sign-in link below.</p>
     <div class="auth-or"><span>or</span></div>
     <input id="authEmail" type="email" placeholder="you@holiner.com" autocomplete="email">
-    <button class="btn wide" id="btnEmail" style="margin-top:8px">Email me a 6-digit code</button>
+    <button class="btn wide" id="btnEmail" style="margin-top:8px">Email me a sign-in link</button>
     <div id="codeStep" style="display:none;margin-top:10px">
       <input id="authCode" inputmode="numeric" autocomplete="one-time-code" placeholder="000000" maxlength="8" style="text-align:center;letter-spacing:.35em;font-size:19px;font-weight:700">
       <button class="btn primary wide" id="btnVerify" style="margin-top:8px">Verify &amp; sign in</button>
@@ -689,11 +689,10 @@ window.SB = (function(){
     var email=(el('authEmail').value||'').trim();
     if(!/.+@.+\..+/.test(email)){ showGate('Enter a valid email address.',true); return; }
     var b=this; b.disabled=true; b.textContent='Sending...';
-    SB.signInOtp(email).then(function(o){ b.disabled=false; b.textContent='Email me a 6-digit code';
-      if(o.ok){ pendingEmail=email; el('codeStep').style.display='block'; el('authCode').value=''; el('authCode').focus();
-        showGate('We emailed a 6-digit code to '+email+'. Enter it below (check spam the first time).'); }
-      else { showGate((o.j&&(o.j.msg||o.j.error_description||o.j.error))||'Could not send the code.',true); }
-    }).catch(function(){ b.disabled=false; b.textContent='Email me a 6-digit code'; showGate('Could not reach the sign-in service.',true); });
+    SB.signInOtp(email).then(function(o){ b.disabled=false; b.textContent='Email me a sign-in link';
+      if(o.ok){ showGate('Check '+email+' for a sign-in link, then click it to come back here signed in (check spam the first time).'); }
+      else { showGate((o.j&&(o.j.msg||o.j.error_description||o.j.error))||'Could not send the link.',true); }
+    }).catch(function(){ b.disabled=false; b.textContent='Email me a sign-in link'; showGate('Could not reach the sign-in service.',true); });
   });
   el('authEmail').addEventListener('keydown',function(e){ if(e.key==='Enter')el('btnEmail').click(); });
   el('btnVerify').addEventListener('click',function(){
