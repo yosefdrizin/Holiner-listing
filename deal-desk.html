@@ -95,10 +95,54 @@
   .foot{margin-top:34px;font-size:12px;color:var(--faint);border-top:1px solid var(--line2);padding-top:16px;max-width:78ch}
   .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--paper);padding:11px 20px;border-radius:12px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:50;box-shadow:var(--shadow2)}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* ---- auth gate ---- */
+  #authGate{position:fixed;inset:0;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:24px;z-index:100}
+  .auth-card{background:var(--card);border:1px solid var(--line2);border-radius:20px;box-shadow:var(--shadow2);padding:34px 30px;width:100%;max-width:380px;text-align:center}
+  .auth-mark{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#8CB47A,#5C8050);color:#fff;font-weight:800;font-size:24px;font-family:Georgia,serif;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+  .auth-card h2{margin:0 0 4px;font-size:19px;font-weight:800}
+  .auth-sub{margin:0 0 20px;font-size:13px;color:var(--faint)}
+  .auth-or{display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--faint);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+  .auth-or::before,.auth-or::after{content:"";flex:1;height:1px;background:var(--line2)}
+  .auth-hint{font-size:11px;color:var(--faint);margin:8px 0 0}
+  .auth-msg{font-size:12.5px;color:var(--green-deep);margin:14px 0 0;min-height:1.1em;line-height:1.4}
+  .auth-msg.bad{color:var(--warn)}
+
+  /* ---- tabs + lists ---- */
+  .tabs{display:flex;gap:4px;margin-bottom:22px;border-bottom:1px solid var(--line2);flex-wrap:wrap}
+  .tab{font:inherit;font-weight:700;font-size:13px;cursor:pointer;border:none;background:none;color:var(--faint);padding:11px 14px;border-bottom:2px solid transparent;margin-bottom:-1px}
+  .tab:hover{color:var(--ink)}
+  .tab.active{color:var(--green-deep);border-bottom-color:var(--green)}
+  .viewh{font-size:18px;font-weight:800;margin:0 0 16px;letter-spacing:-.01em}
+  .listwrap{overflow-x:auto;border:1px solid var(--line2);border-radius:14px;background:var(--card);box-shadow:var(--shadow)}
+  table.listtbl{width:100%;border-collapse:collapse;font-size:13px;min-width:560px}
+  table.listtbl th{background:var(--card2);text-align:left;padding:11px 14px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);font-weight:700;border-bottom:1px solid var(--line2)}
+  table.listtbl th.r{text-align:right}
+  table.listtbl td{padding:11px 14px;border-bottom:1px solid var(--line2);font-variant-numeric:tabular-nums}
+  table.listtbl td.r{text-align:right}
+  table.listtbl tr:last-child td{border-bottom:none}
+  table.listtbl td.note{color:var(--faint)}
+  table.listtbl td.bad{color:var(--warn)}
+  .userbox{display:flex;flex-direction:column;align-items:flex-end;line-height:1.2}
+  .userchip{font-size:13px;font-weight:700}
+  .userrole{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--green-deep);font-weight:700}
 </style>
 </head>
 <body>
-<div class="wrap">
+<div id="authGate">
+  <div class="auth-card">
+    <div class="auth-mark">H</div>
+    <h2>Holiner Deal Desk</h2>
+    <p class="auth-sub">Sign in to reach your deals and contacts.</p>
+    <button class="btn primary wide" id="btnMs">Sign in with Microsoft</button>
+    <p class="auth-hint">Microsoft turns on once your admin finishes the one-time setup. Until then, use the email link below.</p>
+    <div class="auth-or"><span>or</span></div>
+    <input id="authEmail" type="email" placeholder="you@holiner.com" autocomplete="email">
+    <button class="btn wide" id="btnEmail" style="margin-top:8px">Email me a login link</button>
+    <p class="auth-msg" id="authMsg"></p>
+  </div>
+</div>
+<div class="wrap" id="appWrap" style="display:none">
   <header>
     <div class="brand">
       <div class="mark">H</div>
@@ -108,11 +152,19 @@
       </div>
     </div>
     <div class="hgroup">
-      <span class="envbadge" id="envBadge">Sandbox</span>
+      <div class="userbox"><span class="userchip" id="userChip">&nbsp;</span><span class="userrole" id="userRole">Broker</span></div>
+      <button class="btn ghost" id="btnSignOut">Sign out</button>
       <a class="btn ghost" href="index.html">&larr; Launchpad</a>
     </div>
   </header>
 
+  <nav class="tabs" id="tabs">
+    <button class="tab active" id="tabNew">New Deal</button>
+    <button class="tab" id="tabDeals">My Deals</button>
+    <button class="tab" id="tabAdmin" style="display:none">Admin &middot; All Deals</button>
+  </nav>
+
+  <section id="viewNew" class="tabview">
   <p class="lede">Capture a signed deal, generate the Holiner commission invoice, and log it to the CRM - commission math and the contact/deal link are handled for you.</p>
 
   <div class="grid">
@@ -241,9 +293,20 @@
       </div>
     </div>
   </div>
+  </section>
+
+  <section id="viewDeals" class="tabview" hidden>
+    <h2 class="viewh">My Deals</h2>
+    <div class="listwrap"><table class="listtbl"><thead><tr><th>Deal</th><th>Type</th><th>Stage</th><th class="r">Value</th><th class="r">Commission</th><th>Invoice</th></tr></thead><tbody id="dealsBody"></tbody></table></div>
+  </section>
+
+  <section id="viewAdmin" class="tabview" hidden>
+    <h2 class="viewh">All Deals <span class="muted" style="font-size:13px;font-weight:500">&middot; admin overview</span></h2>
+    <div class="listwrap"><table class="listtbl"><thead><tr><th>Broker</th><th>Deal</th><th>Stage</th><th class="r">Value</th><th class="r">Commission</th><th>Invoice</th></tr></thead><tbody id="adminBody"></tbody></table></div>
+  </section>
 
   <div class="foot">
-    <strong>Draft / Sandbox.</strong> Saving writes to the throwaway <em>Deal Desk - SANDBOX</em> databases so your real CRM stays clean while we build. The invoice reproduces the Holiner detailed-schedule format (Annual Rate = un-rounded escalated rate &times; SF; fee applied per year; total split into halves). Enter free months in the Free column and the annual rent, totals, and commission auto-adjust (that period's rent counts only the paying months). Other one-off reductions go in the Adjust. column. Logo is a placeholder until the real Holiner mark is dropped in. Auto-extract turns on once the Claude API is approved.
+    <strong>Your private CRM.</strong> You are signed in with your own account and see only your own deals and contacts; the CEO admin sees everyone's. Saving writes straight into the secure Holiner database. The invoice reproduces the Holiner detailed-schedule format (Annual Rate = un-rounded escalated rate &times; SF; fee applied per year; total split into halves). Enter free months in the Free column and the annual rent, totals, and commission auto-adjust (that period's rent counts only the paying months). Auto-extract from documents turns on once the Claude API is approved.
   </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -484,15 +547,15 @@
   $('saveCrm').addEventListener('click',function(){
     var d=collect();
     if(!d.deal.name){toast('Give the deal a name first');return;}
-    var res=$('result'),inner=$('resultInner');res.className='result show';inner.innerHTML='Saving to CRM&hellip;';
+    if(!window.SB){toast('Still loading - try again in a moment');return;}
+    var res=$('result'),inner=$('resultInner');res.className='result show';inner.innerHTML='Saving to your CRM&hellip;';
     var btn=this;btn.disabled=true;
-    fetch('/api/logDeal',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)})
-      .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});})
-      .then(function(o){btn.disabled=false;
-        if(o.ok&&o.j&&o.j.dealUrl){res.className='result show ok';
-          inner.innerHTML='&#9989; Saved to '+(o.j.target||'CRM')+'. <a href="'+o.j.dealUrl+'" target="_blank">Open the deal in Notion &rarr;</a>'+(o.j.contactUrl?'  &middot;  <a href="'+o.j.contactUrl+'" target="_blank">contact</a>':'');
-        } else {res.className='result show err';inner.innerHTML='&#9888; '+((o.j&&o.j.error)||'Save failed.')+'<br><span class="muted">The backend runs on the deployed preview/live site with the Notion key set. Opening this file locally cannot reach it yet.</span>';}
-      }).catch(function(){btn.disabled=false;res.className='result show err';inner.innerHTML='&#9888; Could not reach the backend. This works on the deployed preview/live site (Cloudflare), not when the file is opened directly.';});
+    window.SB.saveDeal(d).then(function(){btn.disabled=false;
+      res.className='result show ok';
+      inner.innerHTML='&#9989; Saved to your CRM. <a href="#" id="goDeals">View it in My Deals &rarr;</a>';
+      var g=document.getElementById('goDeals');if(g)g.addEventListener('click',function(ev){ev.preventDefault();var t=document.getElementById('tabDeals');if(t)t.click();});
+    }).catch(function(e){btn.disabled=false;res.className='result show err';
+      inner.innerHTML='&#9888; '+escapeHtml(String(e&&e.message?e.message:e))+'<br><span class="muted">Make sure you are still signed in.</span>';});
   });
 
   $('clearAll').addEventListener('click',function(){
@@ -507,6 +570,149 @@
 
   // default invoice date = today
   (function(){var d=new Date();$('i_date').value=d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);})();
+})();
+</script>
+
+<script>
+/* ---- Supabase connector (no library; talks to the web API directly) ---- */
+window.SB = (function(){
+  var URL  = 'https://txabuxjjtjnrnenhcgnt.supabase.co';
+  var ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4YWJ1eGpqdGpucm5lbmhjZ250Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM2MzkzODcsImV4cCI6MjA5OTIxNTM4N30.1H96-oZm9R65viaS8mN1NIgT668Q1sFRVKiAu0jf5H4';
+  var LS = 'holiner_sb_session';
+
+  function saveSession(s){ if(s&&s.access_token){ localStorage.setItem(LS, JSON.stringify(s)); } }
+  function getSession(){ try{ return JSON.parse(localStorage.getItem(LS)||'null'); }catch(e){ return null; } }
+  function clearSession(){ localStorage.removeItem(LS); }
+  function authHeaders(){ var s=getSession(); return { 'apikey':ANON, 'Authorization':'Bearer '+((s&&s.access_token)||ANON), 'Content-Type':'application/json' }; }
+  function redirectTo(){ return location.origin+location.pathname; }
+
+  /* pull tokens out of the URL after a magic-link / Microsoft redirect */
+  function consumeRedirect(){
+    if(location.hash && location.hash.indexOf('access_token=')>=0){
+      var p={}; location.hash.substring(1).split('&').forEach(function(kv){var a=kv.split('=');p[decodeURIComponent(a[0])]=decodeURIComponent(a[1]||'');});
+      if(p.access_token){ saveSession(p); }
+      history.replaceState(null,'',location.pathname+location.search);
+      return !!p.access_token;
+    }
+    if(location.hash && location.hash.indexOf('error')>=0){
+      var q={}; location.hash.substring(1).split('&').forEach(function(kv){var a=kv.split('=');q[decodeURIComponent(a[0])]=decodeURIComponent(a[1]||'');});
+      history.replaceState(null,'',location.pathname+location.search);
+      window.__sbAuthError=q.error_description||q.error||'Sign-in failed';
+    }
+    return false;
+  }
+  function refresh(){
+    var s=getSession(); if(!s||!s.refresh_token) return Promise.reject(new Error('no session'));
+    return fetch(URL+'/auth/v1/token?grant_type=refresh_token',{method:'POST',headers:{'apikey':ANON,'Content-Type':'application/json'},body:JSON.stringify({refresh_token:s.refresh_token})})
+      .then(function(r){return r.json();}).then(function(j){ if(j.access_token){saveSession(j);return j;} clearSession(); throw new Error(j.error_description||j.msg||'session expired'); });
+  }
+  function getUser(){
+    return fetch(URL+'/auth/v1/user',{headers:authHeaders()}).then(function(r){
+      if(r.status===401){ return refresh().then(function(){ return fetch(URL+'/auth/v1/user',{headers:authHeaders()}).then(function(r2){return r2.json();}); }); }
+      return r.json();
+    });
+  }
+  function signInAzure(){ location.href = URL+'/auth/v1/authorize?provider=azure&redirect_to='+encodeURIComponent(redirectTo()); }
+  function signInOtp(email){
+    return fetch(URL+'/auth/v1/otp',{method:'POST',headers:{'apikey':ANON,'Content-Type':'application/json'},
+      body:JSON.stringify({email:email, create_user:true, options:{email_redirect_to:redirectTo()}})})
+      .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});});
+  }
+  function signOut(){ var s=getSession(); if(s&&s.access_token){ fetch(URL+'/auth/v1/logout',{method:'POST',headers:authHeaders()}).catch(function(){}); } clearSession(); }
+
+  function rest(method,path,body,extra){
+    function go(){ var h=authHeaders(); if(extra){Object.keys(extra).forEach(function(k){h[k]=extra[k];});}
+      var opt={method:method,headers:h}; if(body!==undefined)opt.body=JSON.stringify(body); return fetch(URL+'/rest/v1/'+path,opt); }
+    return go().then(function(r){ if(r.status===401){ return refresh().then(go); } return r; })
+      .then(function(r){ return r.text().then(function(t){ var j=t?JSON.parse(t):null; if(!r.ok) throw new Error((j&&(j.message||j.error||j.hint))||('HTTP '+r.status)); return j; }); });
+  }
+  function n(v){ var x=parseFloat(String(v==null?'':v).replace(/[^0-9.\-]/g,'')); return isFinite(x)?x:null; }
+  function saveDeal(d){
+    var contactId=null, chain=Promise.resolve();
+    if(d.contact && d.contact.name){
+      chain=rest('POST','contacts',{name:d.contact.name,company:d.contact.company||null,email:d.contact.email||null,phone:d.contact.phone||null,type:d.contact.type||null},{'Prefer':'return=representation'})
+        .then(function(rows){ if(rows&&rows[0])contactId=rows[0].id; });
+    }
+    return chain.then(function(){
+      var deal={ deal_name:d.deal.name, deal_type:d.deal.type||null, stage:d.deal.stage||'Executed', asset_type:d.deal.asset||null,
+        property_address:d.deal.address||null, deal_value:n(d.deal.value), commission_rate:d.deal.rate||null,
+        commission_owed:n(d.deal.commission), invoice_status:d.deal.invoice||'Draft', close_date:d.deal.close||null, notes:d.deal.notes||null };
+      if(contactId)deal.contact_id=contactId;
+      return rest('POST','deals',deal,{'Prefer':'return=representation'}).then(function(rows){ return {ok:true, deal:rows&&rows[0]}; });
+    });
+  }
+  return { consumeRedirect:consumeRedirect, getSession:getSession, getUser:getUser,
+    signInAzure:signInAzure, signInOtp:signInOtp, signOut:signOut, rest:rest, saveDeal:saveDeal };
+})();
+
+/* ---- gate + tabs + list views ---- */
+(function(){
+  var el=function(id){return document.getElementById(id);};
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function money(v){ if(v==null||v==='')return '-'; var x=Number(v); if(!isFinite(x))return '-'; return '$'+x.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+  var CUR={id:null,email:null,name:null,role:'broker'};
+
+  function showGate(msg,bad){ el('appWrap').style.display='none'; el('authGate').style.display='flex';
+    if(msg){var m=el('authMsg'); m.textContent=msg; m.className='auth-msg'+(bad?' bad':'');} }
+  function showApp(){ el('authGate').style.display='none'; el('appWrap').style.display='block'; }
+
+  function boot(){
+    SB.consumeRedirect();
+    if(window.__sbAuthError){ showGate(window.__sbAuthError,true); return; }
+    var s=SB.getSession();
+    if(!s||!s.access_token){ showGate(); return; }
+    SB.getUser().then(function(u){
+      if(!u||!u.id){ showGate(); return; }
+      CUR.id=u.id; CUR.email=u.email; CUR.name=u.email;
+      return SB.rest('GET','profiles?select=role,full_name&id=eq.'+u.id).then(function(rows){
+        if(rows&&rows[0]){ CUR.role=rows[0].role||'broker'; CUR.name=rows[0].full_name||u.email; }
+        el('userChip').textContent=CUR.name; el('userRole').textContent=(CUR.role==='admin'?'Admin':'Broker');
+        if(CUR.role==='admin') el('tabAdmin').style.display='';
+        showApp();
+      });
+    }).catch(function(){ SB.signOut(); showGate('Your session expired - please sign in again.'); });
+  }
+
+  /* sign-in */
+  el('btnMs').addEventListener('click',function(){ SB.signInAzure(); });
+  el('btnEmail').addEventListener('click',function(){
+    var email=(el('authEmail').value||'').trim();
+    if(!/.+@.+\..+/.test(email)){ showGate('Enter a valid email address.',true); return; }
+    var b=this; b.disabled=true; b.textContent='Sending...';
+    SB.signInOtp(email).then(function(o){ b.disabled=false; b.textContent='Email me a login link';
+      if(o.ok){ showGate('Check '+email+' for a login link, then click it to come back here.'); }
+      else { showGate((o.j&&(o.j.msg||o.j.error_description||o.j.error))||'Could not send the link.',true); }
+    }).catch(function(){ b.disabled=false; b.textContent='Email me a login link'; showGate('Could not reach the sign-in service.',true); });
+  });
+  el('authEmail').addEventListener('keydown',function(e){ if(e.key==='Enter')el('btnEmail').click(); });
+  el('btnSignOut').addEventListener('click',function(){ SB.signOut(); location.reload(); });
+
+  /* tabs */
+  var TABS={ tabNew:'viewNew', tabDeals:'viewDeals', tabAdmin:'viewAdmin' };
+  Object.keys(TABS).forEach(function(tid){
+    el(tid).addEventListener('click',function(){
+      Object.keys(TABS).forEach(function(t){ el(t).classList.remove('active'); el(TABS[t]).hidden=true; });
+      el(tid).classList.add('active'); el(TABS[tid]).hidden=false;
+      if(tid==='tabDeals')loadDeals(); if(tid==='tabAdmin')loadAdmin();
+    });
+  });
+
+  function loadDeals(){
+    var b=el('dealsBody'); b.innerHTML='<tr><td colspan="6" class="note">Loading&hellip;</td></tr>';
+    SB.rest('GET','deals?select=*&order=created_at.desc').then(function(rows){
+      if(!rows||!rows.length){ b.innerHTML='<tr><td colspan="6" class="note">No deals yet. Add one on the New Deal tab.</td></tr>'; return; }
+      b.innerHTML=rows.map(function(d){ return '<tr><td>'+esc(d.deal_name)+'</td><td>'+esc(d.deal_type||'-')+'</td><td>'+esc(d.stage||'-')+'</td><td class="r">'+money(d.deal_value)+'</td><td class="r">'+money(d.commission_owed)+'</td><td>'+esc(d.invoice_status||'-')+'</td></tr>'; }).join('');
+    }).catch(function(e){ b.innerHTML='<tr><td colspan="6" class="bad">'+esc(String(e.message||e))+'</td></tr>'; });
+  }
+  function loadAdmin(){
+    var b=el('adminBody'); b.innerHTML='<tr><td colspan="6" class="note">Loading&hellip;</td></tr>';
+    SB.rest('GET','deals_with_broker?select=*&order=created_at.desc').then(function(rows){
+      if(!rows||!rows.length){ b.innerHTML='<tr><td colspan="6" class="note">No deals in the CRM yet.</td></tr>'; return; }
+      b.innerHTML=rows.map(function(d){ return '<tr><td>'+esc(d.broker_name||d.broker_email||'-')+'</td><td>'+esc(d.deal_name)+'</td><td>'+esc(d.stage||'-')+'</td><td class="r">'+money(d.deal_value)+'</td><td class="r">'+money(d.commission_owed)+'</td><td>'+esc(d.invoice_status||'-')+'</td></tr>'; }).join('');
+    }).catch(function(e){ b.innerHTML='<tr><td colspan="6" class="bad">'+esc(String(e.message||e))+'</td></tr>'; });
+  }
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
 })();
 </script>
 </body>
