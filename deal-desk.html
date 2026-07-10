@@ -618,8 +618,9 @@ window.SB = (function(){
   }
   function signInAzure(){ location.href = URL+'/auth/v1/authorize?provider=azure&redirect_to='+encodeURIComponent(redirectTo()); }
   function signInOtp(email){
-    return fetch(URL+'/auth/v1/otp',{method:'POST',headers:{'apikey':ANON,'Content-Type':'application/json'},
-      body:JSON.stringify({email:email, create_user:true, options:{email_redirect_to:redirectTo()}})})
+    var u = URL+'/auth/v1/otp?redirect_to='+encodeURIComponent(redirectTo());
+    return fetch(u,{method:'POST',headers:{'apikey':ANON,'Content-Type':'application/json'},
+      body:JSON.stringify({email:email, create_user:true})})
       .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});});
   }
   function verifyOtp(email, token){
