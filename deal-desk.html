@@ -135,10 +135,14 @@
     <h2>Holiner Deal Desk</h2>
     <p class="auth-sub">Sign in to reach your deals and contacts.</p>
     <button class="btn primary wide" id="btnMs">Sign in with Microsoft</button>
-    <p class="auth-hint">Microsoft turns on once your admin finishes the one-time setup. Until then, use the email link below.</p>
+    <p class="auth-hint">Microsoft turns on once your admin finishes the one-time setup. Until then, use the email code below.</p>
     <div class="auth-or"><span>or</span></div>
     <input id="authEmail" type="email" placeholder="you@holiner.com" autocomplete="email">
-    <button class="btn wide" id="btnEmail" style="margin-top:8px">Email me a login link</button>
+    <button class="btn wide" id="btnEmail" style="margin-top:8px">Email me a 6-digit code</button>
+    <div id="codeStep" style="display:none;margin-top:10px">
+      <input id="authCode" inputmode="numeric" autocomplete="one-time-code" placeholder="000000" maxlength="8" style="text-align:center;letter-spacing:.35em;font-size:19px;font-weight:700">
+      <button class="btn primary wide" id="btnVerify" style="margin-top:8px">Verify &amp; sign in</button>
+    </div>
     <p class="auth-msg" id="authMsg"></p>
   </div>
 </div>
@@ -618,6 +622,11 @@ window.SB = (function(){
       body:JSON.stringify({email:email, create_user:true, options:{email_redirect_to:redirectTo()}})})
       .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});});
   }
+  function verifyOtp(email, token){
+    return fetch(URL+'/auth/v1/verify',{method:'POST',headers:{'apikey':ANON,'Content-Type':'application/json'},
+      body:JSON.stringify({type:'email', email:email, token:token})})
+      .then(function(r){return r.json().then(function(j){ if(r.ok&&j.access_token){saveSession(j);} return {ok:r.ok,j:j}; });});
+  }
   function signOut(){ var s=getSession(); if(s&&s.access_token){ fetch(URL+'/auth/v1/logout',{method:'POST',headers:authHeaders()}).catch(function(){}); } clearSession(); }
 
   function rest(method,path,body,extra){
@@ -642,7 +651,7 @@ window.SB = (function(){
     });
   }
   return { consumeRedirect:consumeRedirect, getSession:getSession, getUser:getUser,
-    signInAzure:signInAzure, signInOtp:signInOtp, signOut:signOut, rest:rest, saveDeal:saveDeal };
+    signInAzure:signInAzure, signInOtp:signInOtp, verifyOtp:verifyOtp, signOut:signOut, rest:rest, saveDeal:saveDeal };
 })();
 
 /* ---- gate + tabs + list views ---- */
@@ -675,16 +684,29 @@ window.SB = (function(){
 
   /* sign-in */
   el('btnMs').addEventListener('click',function(){ SB.signInAzure(); });
+  var pendingEmail='';
   el('btnEmail').addEventListener('click',function(){
     var email=(el('authEmail').value||'').trim();
     if(!/.+@.+\..+/.test(email)){ showGate('Enter a valid email address.',true); return; }
     var b=this; b.disabled=true; b.textContent='Sending...';
-    SB.signInOtp(email).then(function(o){ b.disabled=false; b.textContent='Email me a login link';
-      if(o.ok){ showGate('Check '+email+' for a login link, then click it to come back here.'); }
-      else { showGate((o.j&&(o.j.msg||o.j.error_description||o.j.error))||'Could not send the link.',true); }
-    }).catch(function(){ b.disabled=false; b.textContent='Email me a login link'; showGate('Could not reach the sign-in service.',true); });
+    SB.signInOtp(email).then(function(o){ b.disabled=false; b.textContent='Email me a 6-digit code';
+      if(o.ok){ pendingEmail=email; el('codeStep').style.display='block'; el('authCode').value=''; el('authCode').focus();
+        showGate('We emailed a 6-digit code to '+email+'. Enter it below (check spam the first time).'); }
+      else { showGate((o.j&&(o.j.msg||o.j.error_description||o.j.error))||'Could not send the code.',true); }
+    }).catch(function(){ b.disabled=false; b.textContent='Email me a 6-digit code'; showGate('Could not reach the sign-in service.',true); });
   });
   el('authEmail').addEventListener('keydown',function(e){ if(e.key==='Enter')el('btnEmail').click(); });
+  el('btnVerify').addEventListener('click',function(){
+    var code=(el('authCode').value||'').replace(/\D/g,'');
+    var email=pendingEmail||(el('authEmail').value||'').trim();
+    if(code.length<6){ showGate('Enter the 6-digit code from the email.',true); return; }
+    var b=this; b.disabled=true; b.textContent='Verifying...';
+    SB.verifyOtp(email,code).then(function(o){ b.disabled=false; b.textContent='Verify & sign in';
+      if(o.ok && o.j && o.j.access_token){ boot(); }
+      else { showGate((o.j&&(o.j.msg||o.j.error_description||o.j.error))||'That code did not work - request a new one.',true); }
+    }).catch(function(){ b.disabled=false; b.textContent='Verify & sign in'; showGate('Could not verify the code.',true); });
+  });
+  el('authCode').addEventListener('keydown',function(e){ if(e.key==='Enter')el('btnVerify').click(); });
   el('btnSignOut').addEventListener('click',function(){ SB.signOut(); location.reload(); });
 
   /* tabs */
