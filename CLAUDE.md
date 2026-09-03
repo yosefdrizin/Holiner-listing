@@ -28,6 +28,14 @@ config in the component constructor - the views and Word export follow automatic
   Each config is `{crumb, title, intro, heading, subjectPrefix, subjectField, recipient, fields}` where
   `fields` mixes header rows `{hdr, sub}` and field rows `{k, label, ph, area?}`. Only filled fields are
   included in the email. Drafts save to `localStorage` per config key (`holiner_intake_<key>_v1`).
+  Field row types: `opts` (single-select pills), `multi` (multi-select checkboxes, comma-joined),
+  `sel` (Have it / Need it / N/A), `suites` (suite table), `map` (the satellite pin map, see below),
+  `req` (essential: asterisk + green border), `inherit: 'otherKey'`, `meta` (wizard-only, not emailed),
+  `listWhen`. Header rows take `showIf: {k, v}` or `showIf: {k, vIn: [...]}` for multiple values.
+
+**Careful with the render's binding object** - it is one enormous object literal shared by every view, so
+a key added for one tool silently overwrites the same key added for another (a duplicate
+`signAttachStyle` did exactly that). Prefix new keys per view (`intakeAttachStyle` vs `signAttachStyle`).
 - **Doc engine** (`view: 'doc'`): schema-driven document builder → live preview + Word `.docx` via
   **`window.RepDocTemplate`** (defined in `_defineRepDocTemplate()`). Configs live in **`this.DOCS`**
   (`tenantRep`, `tenantCommission`, `buyerRep`, `buyerOffer`, `buyerCommission`, `sellerExclusive`,
@@ -68,6 +76,15 @@ trio. One block model feeds both preview and Word so they never diverge; both us
   **`_defineLoiTemplate()`**, called from `componentDidMount`.
 - **`window.RepDocTemplate`** - the generic doc engine (all rep agreements, commission agreements, and
   offers to purchase). Defined as **`_defineRepDocTemplate()`**, called from `componentDidMount`.
+- **`window.SignReqTemplate`** - the Sign Requisition Form (mirrors the paper form, embeds the placement
+  map as a JPEG). Defined as **`_defineSignReqTemplate()`**; driven by `downloadSignReq()`.
+  **`mailto:` cannot carry an attachment** - that is a limit of the protocol, not of this app, so no
+  amount of work here will auto-attach the form. The two actions are deliberately **kept separate on the
+  review screen only**: an Attachment panel with **Download Sign Requisition Form**, and the existing
+  **Send to team / Send to Marketing** which just opens the draft. The broker downloads, sends, and drags
+  the file in. Do not re-add a download button to the wizard steps or bolt the download onto the send
+  button - that was tried and the extra prompts were the problem. Real auto-attach needs the Outlook
+  add-in or Graph `sendMail`, both of which wait on the Entra app registration.
 
 ### ⚠️ Gotcha - define new doc-modules INSIDE the component, NOT as inline `<helmet>` scripts
 The DC framework **transforms inline `<helmet>` `<script>` tags**. That transform corrupts module code and
@@ -87,12 +104,41 @@ blank/partial. (`window.AgreementTemplate` gets away with being a script only be
   nothing; the fix was restoring the fully-inline build.)
 - **No external dependencies that could 404** - keep everything inline (fonts/CSS/JS as inline or `data:` URIs).
 
+### The one deliberate exception: the sign placement map
+`window.HolinerSignMap` (defined in **`_defineSignMap()`**) is a ~200-line hand-rolled slippy map - **not a
+library** - so no script can 404 and halt the boot. It is the only part of the app that calls out to the
+network, and only for **image tiles and a geocode lookup**, both from Esri and both **keyless**:
+- Tiles: `server.arcgisonline.com/.../World_Imagery/MapServer/tile/{z}/{y}/{x}` (sends
+  `Access-Control-Allow-Origin: *`, which is what lets the canvas export stay untainted).
+- Geocode: `geocode.arcgis.com/.../findAddressCandidates` for the "Find the property" button.
+- Attribution ("Imagery: Esri, Maxar, Earthstar Geographics") is drawn on the map **and** burned into the
+  exported image. Keep it.
+
+If either call fails the map degrades quietly - the step still works, the broker can pan manually or the
+coordinates carry alone, and **nothing else on the page is affected.** Values are stored on a normal
+string field as `"lat,lon,zoom"`. `raster(value, w, h)` returns a JPEG data URI used by both the Word form
+and the rich clipboard paste; `_prepSignMapImage()` pre-renders it when the email/brief view opens so the
+clipboard write stays inside the user gesture.
+
+The map mounts imperatively: the template emits `<div data-signmap="<fieldKey>">` and **`_mountSignMap()`**
+(called from `componentDidMount` **and `componentDidUpdate`**) picks the node that is both bound and
+visible - the intake template emits one per row, so selecting by id would grab a hidden one. Sign fields
+live in the **intake store** for the Sale Listing and the **form store** for the Lease Listing;
+everything routes through **`_signData()` / `_signSet()`**, which switch on `this.state.view`.
+
 ## Editing the bundle (how `index.html` stores the app)
 The whole app is a **JSON-encoded string** inside `<script type="__bundler/template">`. To edit safely:
 decode it (`JSON.parse`), edit the readable source, then re-encode - standard JSON-string-escaping
 **plus** escape every closing-tag slash (each `</` is written as its unicode `\uXXXX` form) so the string
-can't break out of the `<script>`. Gate any re-encode with a **byte-for-byte round-trip test** on the
-untouched template before trusting it.
+can't break out of the `<script>`.
+
+**A byte-for-byte re-encode is impossible** and you should not chase it: the original text mixes escaping
+styles (`·` is written `·` while `—` and `×` sit raw), because it was written by different passes
+over time. The correct gate is **semantic**: assert that `JSON.parse(encode(src)) === src` and that the
+encoded text contains no raw `</`, then write the file and **re-decode what landed on disk** to confirm it
+still matches your source. Escaping every non-ASCII char as `\uXXXX` is the safe encoder. The template is
+one enormous single line, so any edit shows up as a one-line diff no matter how surgical it is - **verify
+behavior in a browser, not by reading the diff.**
 
 ## Build specs
 Reference build sheets live in **[docs/](docs/)** - e.g.
