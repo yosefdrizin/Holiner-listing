@@ -53,6 +53,15 @@ paragraph, brokerage recognition, agency disclosure, and the acceptance block by
 clauses (ids 200+, `side: 'tenant'` in `this.LIB`) and the "Tenant-Favorable" tier chip appear only on
 the tenant side.
 
+**Base-rent schedule builder** - the Economics card's **Build schedule** button (`loiBuildSchedule()`)
+reads the Year 1 `$/RSF` from the first `baseRentRows` row plus `escalationPct` and `termYears`, and
+replaces the rows with one per lease year, each compounding on the prior year's rate. It keeps the first
+row's "Additional expenses" text and its label style (`Year N` if row 1 says "Year", otherwise
+`Months 1 - 12`), and a partial final year renders as its real month span. Rows stay hand-editable after
+the build. The Base Rent footnote in `buildLoiBlocks` comes from `rentFootnote(d, rows)`: escalation %,
+abated months, and net effective rent - it re-reads the rows as edited, deriving each row's length from
+its period label via `periodMonths()`, and drops the net-effective sentence if any row is unparseable.
+
 ## Navigation pattern: Rep → Document Type → (Asset Class) → Builder
 Navigation is internal `view` state. The levels:
 1. **Representation** - the home "Choose a representation" hub (Tenant / Landlord / Buyer / Seller).
