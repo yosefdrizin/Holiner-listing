@@ -85,6 +85,18 @@ trio. One block model feeds both preview and Word so they never diverge; both us
   **`_defineLoiTemplate()`**, called from `componentDidMount`.
 - **`window.RepDocTemplate`** - the generic doc engine (all rep agreements, commission agreements, and
   offers to purchase). Defined as **`_defineRepDocTemplate()`**, called from `componentDidMount`.
+- **`window.BriefDocTemplate`** - the Lease Listing form as a Word reference copy. Defined as
+  **`_defineBriefDocTemplate()`**; driven by `downloadFullBrief()`.
+  **It is built from `_briefFormSchema()`, not from `buildBrief()`** - that distinction is the whole
+  point. `buildBrief()` models the *email*: it drops every blank and leaves signage out entirely, so a
+  document built from it silently hides answers the broker actually gave (signage, and the owner name
+  when "publish owner name" is off). `_briefFormSchema()` instead mirrors the **wizard** - all 67 fields,
+  grouped `Step 1..Step 8` in fill-out order, booleans rendered as Yes/No or Attached/Not attached, empty
+  suites shown rather than dropped - so marketing sees the full menu of questions and can tell at a glance
+  what was answered and what was skipped. Blanks print as `(not provided)` and are tallied at the end.
+  **If you add a field to the lease form, add it to `_briefFormSchema()` too** or it will be invisible here.
+  Note a saved draft cannot serve this purpose: drafts are `localStorage`, so they are per-browser and
+  per-device and nobody else can open them. The document is the shareable artifact.
 - **`window.SignReqTemplate`** - the Sign Requisition Form (mirrors the paper form, embeds the placement
   map as a JPEG). Defined as **`_defineSignReqTemplate()`**; driven by `downloadSignReq()`.
   **`mailto:` cannot carry an attachment** - that is a limit of the protocol, not of this app, so no
@@ -94,6 +106,17 @@ trio. One block model feeds both preview and Word so they never diverge; both us
   the file in. Do not re-add a download button to the wizard steps or bolt the download onto the send
   button - that was tried and the extra prompts were the problem. Real auto-attach needs the Outlook
   add-in or Graph `sendMail`, both of which wait on the Entra app registration.
+
+### ⚠️ Gotcha - the template compiler rejects a bound `<img src="{{ ... }}">`
+Binding anything into an `<img>`'s `src` makes the DC template fail to compile. The page still renders,
+but a bare **`[bundle] error`** div is appended as a third child of `<body>` (a healthy build has exactly
+two: the app `DIV` and the component `SCRIPT`). Nothing is logged to the console and the component script
+itself compiles fine with `new Function(...)`, so this is easy to chase in the wrong direction - check
+`document.body.children.length` first.
+
+Show an image the way `_mountSignSketch()` does: render `<div data-signsketch="1">` and append a real
+`<img>` to it from `componentDidUpdate`, exactly like `_mountSignMap()`. Style/`href` bindings are fine;
+it is specifically `src`.
 
 ### ⚠️ Gotcha - define new doc-modules INSIDE the component, NOT as inline `<helmet>` scripts
 The DC framework **transforms inline `<helmet>` `<script>` tags**. That transform corrupts module code and
@@ -128,6 +151,13 @@ coordinates carry alone, and **nothing else on the page is affected.** Values ar
 string field as `"lat,lon,zoom"`. `raster(value, w, h)` returns a JPEG data URI used by both the Word form
 and the rich clipboard paste; `_prepSignMapImage()` pre-renders it when the email/brief view opens so the
 clipboard write stays inside the user gesture.
+
+**Uploaded images must be downscaled before they touch a draft.** `_readImageFile(file, maxEdge, quality)`
+runs every upload through a canvas: a phone photo is ~3MB as a data URI, which would blow the
+`localStorage` budget, while 1600px at q0.82 lands near 550KB (measured: 3,071KB -> 559KB, and a draft
+holding two images came to 884KB). It also normalises everything to JPEG, so the Word export only ever
+deals with one format. HEIC cannot be decoded by the browser at all - iOS converts on upload, but a
+`.heic` dragged in from a desktop fails, so the reject path says so in plain words.
 
 The map mounts imperatively: the template emits `<div data-signmap="<fieldKey>">` and **`_mountSignMap()`**
 (called from `componentDidMount` **and `componentDidUpdate`**) picks the node that is both bound and
